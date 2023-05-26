@@ -2,12 +2,14 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.controller.exceptions.UserAlreadyException;
+import ru.yandex.practicum.filmorate.controller.exceptions.UserAlreadyPresentException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -17,14 +19,13 @@ public class UserController {
 
 
     @GetMapping("/users")
-    public User[] getUsers() {
+    public List<User> getUsers() {
         if (users.isEmpty()) {
             throw new ValidationException("Users is empty");
         }
-        int i = 0;
-        User[] toReturn = new User[users.size()];
+        List<User> toReturn = new ArrayList<>();
         for (Integer integer : users.keySet()) {
-            toReturn[i++] = users.get(integer);
+            toReturn.add(users.get(integer));
         }
         log.trace("Amount of users" + users.size());
         return toReturn;
@@ -32,41 +33,39 @@ public class UserController {
 
     @PostMapping("/users")
     public User postUser(@RequestBody User user) {
-        if ((user.getEmail() != null)&&(user.getEmail().contains("@"))) {
-            if ((user.getLogin() != null)&&(!user.getLogin().contains(" "))) {
-                if (user.getName() == null) {
-                    user.setName(user.getLogin());
-                } if (user.getBirthday().isBefore(LocalDate.now())) {
-                    if (!users.containsKey(user.getId())) {
-                        user.setId(countId++);
-                        users.put(user.getId(), user);
-                        log.trace(user.toString());
-                        return user;
-                    } else {
-                        throw new UserAlreadyException("User with email: " + user.getEmail() + " is exists");
-                    }
-                }
-            }
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
         }
-        throw new ValidationException("User can't be post");
+        if (!(user.getEmail().contains("@")) ||
+                (user.getLogin().contains(" ")) ||
+                (user.getBirthday().isAfter(LocalDate.now()))
+        ) {
+            throw new ValidationException("User can't be post");
+        } else if (!users.containsKey(user.getId())) {
+            user.setId(countId++);
+            users.put(user.getId(), user);
+            log.trace(user.toString());
+            return user;
+        } else {
+            throw new UserAlreadyPresentException("User with email: " + user.getEmail() + " is exists");
+        }
     }
 
     @PutMapping("/users")
     public User putUser(@RequestBody User user) {
-        if ((user.getEmail() != null)&&(user.getEmail().contains("@"))) {
-            if ((user.getLogin() != null)&&(!user.getLogin().contains(" "))) {
-                if (user.getName() == null) {
-                    user.setName(user.getLogin());
-                } if (user.getBirthday().isBefore(LocalDate.now())){
-                    if (users.containsKey(user.getId())) {
-                        users.put(user.getId(), user);
-                        return user;
-                    } else {
-                        throw new UserAlreadyException("User with email: " + user.getEmail() + " is'nt exists");
-                    }
-                }
-            }
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
         }
-        throw new ValidationException("User can't be put");
+        if (!(user.getEmail().contains("@")) ||
+                (user.getLogin().contains(" ")) ||
+                (user.getBirthday().isAfter(LocalDate.now()))
+        ) {
+            throw new ValidationException("User can't be put");
+        } else if (users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
+            return user;
+        } else {
+            throw new UserAlreadyPresentException("User with email: " + user.getEmail() + " is'nt exists");
+        }
     }
 }

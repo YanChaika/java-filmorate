@@ -34,41 +34,35 @@ public class FilmController {
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) {
-        if ((film.getName() != null)&&(!(film.getName().isBlank()))) {
-            if (film.getDescription().getBytes(StandardCharsets.UTF_8).length <= 200) {
-                if (film.getReleaseDate().isAfter(earliestReleaseDate)) {
-                    if (film.getDuration() > 0) {
-                        if (!films.containsKey(film.getId())) {
-                            film.setId(countId++);
-                            films.put(film.getId(), film);
-                            log.trace(film.toString());
-                            return film;
-                        } else {
-                            throw new FilmAlreadyException("Film with name: " + film.getName() + " is exists");
-                        }
-                    }
-                }
-            }
+        if ((film.getName().isBlank()) ||
+                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
+                (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
+                (film.getDuration() <= 0)
+        ) {
+            throw new ValidationException("Error: can't be post film");
+        } else if (!films.containsKey(film.getId())) {
+            film.setId(countId++);
+            films.put(film.getId(), film);
+            log.trace(film.toString());
+            return film;
+        } else {
+            throw new FilmAlreadyException("Film with name: " + film.getName() + " is exists");
         }
-        throw new ValidationException("Error: can't be post film");
     }
 
     @PutMapping("/films")
     public Film putFilm(@RequestBody Film film) {
-        if ((film.getName() != null)&&(!(film.getName().isBlank()))) {
-            if (film.getDescription().getBytes(StandardCharsets.UTF_8).length <= 200) {
-                if (film.getReleaseDate().isAfter(earliestReleaseDate)) {
-                    if (film.getDuration() > 0) {
-                        if (films.containsKey(film.getId())) {
-                            films.put(film.getId(), film);
-                            return film;
-                        } else {
-                            throw new FilmAlreadyException("Film with name: " + film.getName() + " don't exists");
-                        }
-                    }
-                }
-            }
+        if ((film.getName().isBlank()) ||
+                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
+                (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
+                (film.getDuration() <= 0)
+        ) {
+            throw new ValidationException("Error: can't be post film");
+        } else if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+            return film;
+        } else {
+            throw new FilmAlreadyException("Film with name: " + film.getName() + " don't exists");
         }
-        throw new ValidationException("Error: can't be put film");
     }
 }

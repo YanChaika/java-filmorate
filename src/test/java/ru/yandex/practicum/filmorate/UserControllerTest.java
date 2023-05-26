@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,10 +26,10 @@ public class UserControllerTest extends FilmorateApplicationTests{
         createUser();
         userController.postUser(testUser);
 
-        User[] users = userController.getUsers();
-        assertEquals(1, users.length, "length not correct");
+        List<User> users = userController.getUsers();
+        assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
-        assertEquals(testUser, users[0], "user not correct");
+        assertEquals(testUser, users.get(0), "user not correct");
     }
 
     @Test
@@ -110,10 +111,10 @@ public class UserControllerTest extends FilmorateApplicationTests{
             )
         );
 
-        User[] users = userController.getUsers();
-        assertEquals(1, users.length, "length not correct");
+        List<User> users = userController.getUsers();
+        assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
-        assertEquals("dolore", users[0].getName(), "users name not correct");
+        assertEquals("dolore", users.get(0).getName(), "users name not correct");
     }
 
     @Test
@@ -208,10 +209,10 @@ public class UserControllerTest extends FilmorateApplicationTests{
         updatedUser.setId(testUser.getId());
         userController.putUser( updatedUser);
 
-        User[] users = userController.getUsers();
-        assertEquals(1, users.length, "length not correct");
+        List<User> users = userController.getUsers();
+        assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
-        assertEquals("dolore", users[0].getName(), "users name not correct");
+        assertEquals("dolore", users.get(0).getName(), "users name not correct");
     }
 
     @Test
