@@ -65,7 +65,7 @@ public class UserController {
             users.put(user.getId(), user);
             return user;
         } else {
-            throw new UserAlreadyPresentException("User with email: " + user.getEmail() + " is'nt exists");
+            throw new UserAlreadyPresentException("User with email: " + user.getEmail() + " isn't exists");
         }
     }
 }

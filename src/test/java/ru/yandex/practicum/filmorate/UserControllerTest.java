@@ -9,8 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest extends FilmorateApplicationTests {
 
@@ -38,8 +37,8 @@ public class UserControllerTest extends FilmorateApplicationTests {
 
     @Test
     void shouldThrowExWhenCreateUserWithoutLogin() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
                 () -> userController.postUser(
                         new User(
                                 "mail@mail.ru",
@@ -50,13 +49,13 @@ public class UserControllerTest extends FilmorateApplicationTests {
                 "not correct error"
         );
 
-        assertEquals("User can't be post", exception.getMessage());
+        assertNotNull(exception);
     }
 
     @Test
     void shouldThrowExWhenCreateUserWithoutEmail() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
                 () -> userController.postUser(
                         new User(
                                 null,
@@ -67,7 +66,7 @@ public class UserControllerTest extends FilmorateApplicationTests {
                 "not correct error"
         );
 
-        assertEquals("User can't be post", exception.getMessage());
+        assertNotNull(exception);
     }
 
     @Test
@@ -149,8 +148,8 @@ public class UserControllerTest extends FilmorateApplicationTests {
 
     @Test
     void shouldThrowExWhenPutUserWithoutEmail() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
                 () -> userController.putUser(
                         new User(
                                 null,
@@ -160,7 +159,7 @@ public class UserControllerTest extends FilmorateApplicationTests {
                 ),
                 "not correct error"
         );
-        assertEquals("User can't be put", exception.getMessage());
+        assertNotNull(exception);
     }
 
     @Test

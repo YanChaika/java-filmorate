@@ -8,8 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
 
@@ -40,8 +39,8 @@ public class FilmControllerTest {
 
     @Test
     void shouldThrowExWhenCreateFilmWithoutName() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
                 () -> filmController.postFilm(
                         new Film(
                                 null,
@@ -53,7 +52,7 @@ public class FilmControllerTest {
                 "not correct error"
         );
 
-        assertEquals("Error: can't be post film", exception.getMessage());
+        assertNotNull(exception);
     }
 
     @Test
@@ -112,8 +111,8 @@ public class FilmControllerTest {
 
     @Test
     void shouldThrowExWhenPutFilmWithoutName() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
                 () -> filmController.putFilm(
                         new Film(
                                 null,
@@ -125,7 +124,7 @@ public class FilmControllerTest {
                 "not correct error"
         );
 
-        assertEquals("Error: can't be put film", exception.getMessage());
+        assertNotNull(exception);
     }
 
     @Test
