@@ -34,7 +34,8 @@ public class FilmController {
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) {
-        if ((film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
+        if ((film.getName().isBlank()) ||
+                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
                 (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
                 (film.getDuration() <= 0)
         ) {
@@ -51,7 +52,8 @@ public class FilmController {
 
     @PutMapping("/films")
     public Film putFilm(@RequestBody Film film) {
-        if ((film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
+        if ((film.getName().isBlank()) ||
+                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
                 (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
                 (film.getDuration() <= 0)
         ) {
