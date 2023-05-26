@@ -12,20 +12,24 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserControllerTest extends FilmorateApplicationTests{
+public class UserControllerTest extends FilmorateApplicationTests {
 
     private User testUser;
     private UserController userController = new UserController();
 
     private void createUser() {
-        testUser = new User("mail@mail.ru", "dolore", "Nick Name", LocalDate.of(1946,8,20));
+        testUser = new User(
+                "mail@mail.ru",
+                "dolore",
+                "Nick Name",
+                LocalDate.of(1946,8,20)
+        );
     }
 
     @Test
     void shouldGetUsers() {
         createUser();
         userController.postUser(testUser);
-
         List<User> users = userController.getUsers();
         assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
@@ -110,7 +114,6 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 LocalDate.of(1946,8,20)
             )
         );
-
         List<User> users = userController.getUsers();
         assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
@@ -141,7 +144,6 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 () -> userController.getUsers(),
                 "not correct error"
         );
-
         assertEquals("Users is empty", exception.getMessage());
     }
 
@@ -158,7 +160,6 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 ),
                 "not correct error"
         );
-
         assertEquals("User can't be put", exception.getMessage());
     }
 
@@ -175,7 +176,6 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 ),
                 "not correct error"
         );
-
         assertEquals("User can't be put", exception.getMessage());
     }
 
@@ -192,12 +192,11 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 ),
                 "not correct error"
         );
-
         assertEquals("User can't be put", exception.getMessage());
     }
 
     @Test
-    void shouldPutUsersWithNameLikeLogin()  {
+    void shouldPutUsersWithNameLikeLogin() {
         createUser();
         userController.postUser(testUser);
         User updatedUser = new User(
@@ -207,8 +206,7 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 LocalDate.of(1946,8,20)
         );
         updatedUser.setId(testUser.getId());
-        userController.putUser( updatedUser);
-
+        userController.putUser(updatedUser);
         List<User> users = userController.getUsers();
         assertEquals(1, users.size(), "length not correct");
         Assertions.assertNotNull(users, "users is null");
@@ -228,7 +226,6 @@ public class UserControllerTest extends FilmorateApplicationTests{
                 ),
                 "not correct error"
         );
-
         assertEquals("User can't be put", exception.getMessage());
     }
 }
