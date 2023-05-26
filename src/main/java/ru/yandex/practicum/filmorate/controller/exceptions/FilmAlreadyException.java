@@ -5,5 +5,4 @@ public class FilmAlreadyException extends RuntimeException {
     public FilmAlreadyException(final String message) {
         super(message);
     }
-
 }
