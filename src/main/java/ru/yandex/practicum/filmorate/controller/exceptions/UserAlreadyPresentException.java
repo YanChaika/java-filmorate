@@ -5,5 +5,6 @@ public class UserAlreadyPresentException extends RuntimeException {
     public UserAlreadyPresentException(final String message) {
         super(message);
     }
+
 }
 
