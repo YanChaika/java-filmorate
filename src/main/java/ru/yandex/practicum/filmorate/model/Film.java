@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -14,5 +15,14 @@ public class Film {
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
+    private Set<Integer> likes;
+    private int countLikes = 0;
 
+    public Set<Integer> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Integer> likes) {
+        this.likes = likes;
+    }
 }

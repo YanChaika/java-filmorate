@@ -5,16 +5,22 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
 
     private Film testFilm;
+    private FilmStorage filmStorage = new InMemoryFilmStorage();
+    private FilmService filmService = new FilmService(filmStorage);
 
-    private FilmController filmController = new FilmController();
+    private FilmController filmController = new FilmController(filmStorage, filmService);
 
     private void createFilm() {
         testFilm = new Film(
@@ -31,10 +37,10 @@ public class FilmControllerTest {
         createFilm();
         filmController.postFilm(testFilm);
 
-        Film[] films = filmController.getFilms();
-        assertEquals(1, films.length, "length not correct");
+        List<Film> films = filmController.getFilms();
+        assertEquals(1, films.size(), "length not correct");
         Assertions.assertNotNull(films, "films is null");
-        assertEquals(testFilm, films[0], "film not correct");
+        assertEquals(testFilm, films.get(0), "film not correct");
     }
 
     @Test
