@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -143,8 +144,8 @@ public class UserControllerTest extends FilmorateApplicationTests {
 
     @Test
     void shouldThrowExWhenGetEmptyUsers() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final IncorrectIdException exception = assertThrows(
+                IncorrectIdException.class,
                 () -> userController.getUsers(),
                 "not correct error"
         );
