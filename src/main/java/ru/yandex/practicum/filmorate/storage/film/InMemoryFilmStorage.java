@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.controller.exceptions.FilmAlreadyException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -19,17 +18,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
     private static int countId = 1;
-    /*private Set<Film> filmsByLikes =  new TreeSet<>(new Comparator<Film>() {
-        @Override
-        public int compare(Film o1, Film o2) {
-            return Integer.compare(o2.getLikes().size(), o1.getLikes().size());
-        }
-    });*/
 
     @Override
     public List<Film> getAll() {
         if (!films.isEmpty()) {
-            //throw new IncorrectIdException("films is empty");
             int i = 0;
             List<Film> toReturn = new ArrayList<>();
             for (Integer integer : films.keySet()) {

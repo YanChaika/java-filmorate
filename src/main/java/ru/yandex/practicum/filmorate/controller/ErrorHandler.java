@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.controller.exceptions.FilmAlreadyException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.UserAlreadyPresentException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestControllerAdvice
 public class ErrorHandler {
