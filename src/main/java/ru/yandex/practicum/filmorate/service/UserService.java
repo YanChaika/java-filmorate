@@ -69,7 +69,7 @@ public class UserService {
     public List<User> compareFriends(Integer id, Integer otherId) {
         List<User> toCheckUser = getAllFriends(id);
         List<User> toCheckOther = getAllFriends(otherId);
-        if ((toCheckOther.isEmpty())||(toCheckUser.isEmpty())) {
+        if ((toCheckOther.isEmpty()) || (toCheckUser.isEmpty())) {
             return new ArrayList<User>();
         }
         List<User> answer = new ArrayList<>();
