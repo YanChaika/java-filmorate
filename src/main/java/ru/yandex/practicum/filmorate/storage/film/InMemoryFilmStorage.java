@@ -4,11 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exceptions.FilmAlreadyException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
-import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -16,7 +13,6 @@ import java.util.*;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Integer, Film> films = new HashMap<>();
-    private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
     private static int countId = 1;
 
     @Override
@@ -35,13 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        if ((film.getName().isBlank()) ||
-                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
-                (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
-                (film.getDuration() <= 0)
-        ) {
-            throw new ValidationException("Error: can't be post film");
-        } else if (!films.containsKey(film.getId())) {
+        if (!films.containsKey(film.getId())) {
             film.setId(countId++);
             films.put(film.getId(), film);
             log.trace(film.toString());
@@ -53,13 +43,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        if ((film.getName().isBlank()) ||
-                (film.getDescription().getBytes(StandardCharsets.UTF_8).length > 200) ||
-                (film.getReleaseDate().isBefore(earliestReleaseDate)) ||
-                (film.getDuration() <= 0)
-        ) {
-            throw new ValidationException("Error: can't be put film");
-        } else if (films.containsKey(film.getId())) {
+        if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
             return film;
         } else {

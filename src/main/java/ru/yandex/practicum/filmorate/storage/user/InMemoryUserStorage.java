@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.UserAlreadyPresentException;
-import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,15 +32,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        if ((user.getName() == null) || (user.getName().isBlank())) {
-            user.setName(user.getLogin());
-        }
-        if (!(user.getEmail().contains("@")) ||
-                (user.getLogin().contains(" ")) ||
-                (user.getBirthday().isAfter(LocalDate.now()))
-        ) {
-            throw new ValidationException("User can't be post");
-        } else if (!users.containsKey(user.getId())) {
+        if (!users.containsKey(user.getId())) {
             user.setId(countId++);
             users.put(user.getId(), user);
             log.trace(user.toString());
@@ -54,15 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        if (!(user.getEmail().contains("@")) ||
-                (user.getLogin().contains(" ")) ||
-                (user.getBirthday().isAfter(LocalDate.now()))
-        ) {
-            throw new ValidationException("User can't be put");
-        } else if (users.containsKey(user.getId())) {
+        if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
             return user;
         } else {

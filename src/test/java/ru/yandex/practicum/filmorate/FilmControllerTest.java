@@ -20,7 +20,7 @@ public class FilmControllerTest {
     private FilmStorage filmStorage = new InMemoryFilmStorage();
     private FilmService filmService = new FilmService(filmStorage);
 
-    private FilmController filmController = new FilmController(filmStorage, filmService);
+    private FilmController filmController = new FilmController(filmService);
 
     private void createFilm() {
         testFilm = new Film(

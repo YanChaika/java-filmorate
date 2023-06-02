@@ -2,9 +2,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,13 +45,9 @@ public class UserService {
     public User removeFromFriends(Integer id, Integer friendId) {
         User userToUpdate = userStorage.getById(id);
         User friendToUpdate = userStorage.getById(friendId);
-        Set<Integer> friendsUser1 = userToUpdate.getFriends();
-        friendsUser1.remove(friendId);
-        userToUpdate.setFriends(friendsUser1);
+        userToUpdate.getFriends().remove(friendId);
         userStorage.update(userToUpdate);
-        Set<Integer> friendsUser2 = friendToUpdate.getFriends();
-        friendsUser2.remove(friendId);
-        friendToUpdate.setFriends(friendsUser2);
+        friendToUpdate.getFriends().remove(friendId);
         userStorage.update(friendToUpdate);
         return userToUpdate;
     }
@@ -81,5 +79,41 @@ public class UserService {
             }
         }
         return answer;
+    }
+
+    public List<User> getAll() {
+        return userStorage.getAll();
+    }
+
+    public User create(User user) {
+        if ((user.getName() == null) || (user.getName().isBlank())) {
+            user.setName(user.getLogin());
+        }
+        if (!(user.getEmail().contains("@")) ||
+                (user.getLogin().contains(" ")) ||
+                (user.getBirthday().isAfter(LocalDate.now()))
+        ) {
+            throw new ValidationException("User can't be post");
+        } else {
+            return userStorage.create(user);
+        }
+    }
+
+    public User update(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        if (!(user.getEmail().contains("@")) ||
+                (user.getLogin().contains(" ")) ||
+                (user.getBirthday().isAfter(LocalDate.now()))
+        ) {
+            throw new ValidationException("User can't be put");
+        } else {
+            return userStorage.update(user);
+        }
+    }
+
+    public User getById(Integer id) {
+        return userStorage.getById(id);
     }
 }

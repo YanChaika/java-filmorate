@@ -1,46 +1,41 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.List;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class FilmController {
 
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
-
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
-        this.filmService = filmService;
-    }
-
 
     @GetMapping("/films")
     public List<Film> getFilms() {
-        return filmStorage.getAll();
+        return filmService.getAll();
     }
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) {
-        return filmStorage.create(film);
+        return filmService.create(film);
     }
 
     @PutMapping("/films")
     public Film putFilm(@RequestBody Film film) {
-        return filmStorage.update(film);
+        return filmService.update(film);
     }
 
     @GetMapping("/films/{id}")
     public Film getFilmById(@PathVariable Integer id) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
-        return filmStorage.getFilmById(id);
+        return filmService.getFilmById(id);
+
     }
 
     @PutMapping("/films/{id}/like/{userId}")

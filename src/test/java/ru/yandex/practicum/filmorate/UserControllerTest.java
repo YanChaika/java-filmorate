@@ -20,7 +20,7 @@ public class UserControllerTest extends FilmorateApplicationTests {
     private User testUser;
     private UserStorage userStorage = new InMemoryUserStorage();
     private UserService userService = new UserService(userStorage);
-    private UserController userController = new UserController(userStorage, userService);
+    private UserController userController = new UserController(userService);
 
     private void createUser() {
         testUser = new User(

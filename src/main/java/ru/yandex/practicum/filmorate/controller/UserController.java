@@ -1,45 +1,40 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
-    private final UserStorage userStorage;
     private final UserService userService;
-
-public UserController(UserStorage userStorage, UserService userService) {
-    this.userStorage = userStorage;
-    this.userService = userService;
-}
 
     @GetMapping("/users")
     public List<User> getUsers() {
-        return userStorage.getAll();
+        return userService.getAll();
     }
 
     @PostMapping("/users")
     public User postUser(@RequestBody User user) {
-        return userStorage.create(user);
+        return userService.create(user);
     }
 
     @PutMapping("/users")
     public User putUser(@RequestBody User user) {
-        return userStorage.update(user);
+        return userService.update(user);
     }
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Integer id) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
-        return userStorage.getById(id);
+        return userService.getById(id);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
