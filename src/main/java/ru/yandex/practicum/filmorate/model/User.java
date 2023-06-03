@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class User {
@@ -14,6 +15,7 @@ public class User {
     private final String login;
     private String name;
     private final LocalDate birthday;
+    private Set<Integer> friends;
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
