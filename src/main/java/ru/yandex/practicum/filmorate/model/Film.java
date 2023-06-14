@@ -17,6 +17,8 @@ public class Film {
     private final int duration;
     private Set<Integer> likes;
     private int countLikes = 0;
+    private final FilmGenre genre;
+    private final int ratingId;
 
     public Set<Integer> getLikes() {
         return likes;

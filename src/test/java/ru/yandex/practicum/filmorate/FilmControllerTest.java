@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.yandex.practicum.filmorate.model.FilmGenre.ACTION;
+import static ru.yandex.practicum.filmorate.model.FilmGenre.THRILLER;
 
 public class FilmControllerTest {
 
@@ -27,7 +29,9 @@ public class FilmControllerTest {
                 "nisi eiusmod",
                 "adipisicing",
                 LocalDate.of(1946,8,20),
-                100
+                100,
+                ACTION,
+                1
         );
     }
 
@@ -52,7 +56,9 @@ public class FilmControllerTest {
                                 null,
                                 "adipisicing",
                                 LocalDate.of(1946,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -70,7 +76,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing kljdfjksdjlsldjgjkdsjkgljslkdjklslkjkkksiqwjkjsdkjgnskjdfhioaoiwehrjwdkdskafhsdgi0jwoejnradslkmfdajfbguadhfjgaas'lkadfaksldhgjdkfhgdsklfjqkjkjdlskjfklsjdlkfjskdjfljsdlkfjslkdjfjlksdlfkjsldkjfklsjdfjsdlkfjklsdjfkljsdkjf",
                                 LocalDate.of(1946,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -88,7 +96,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing",
                                 LocalDate.of(1446,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -106,7 +116,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing",
                                 LocalDate.of(1946,8,20),
-                                -100
+                                -100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -124,7 +136,9 @@ public class FilmControllerTest {
                                 null,
                                 "adipisicing",
                                 LocalDate.of(1946,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -142,7 +156,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing kljdfjksdjlsldjgjkdsjkgljslkdjklslkjkkksiqwjkjsdkjgnskjdfhioaoiwehrjwdkdskafhsdgi0jwoejnradslkmfdajfbguadhfjgaas'lkadfaksldhgjdkfhgdsklfjqkjkjdlskjfklsjdlkfjskdjfljsdlkfjslkdjfjlksdlfkjsldkjfklsjdfjsdlkfjklsdjfkljsdkjf",
                                 LocalDate.of(1946,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -160,7 +176,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing",
                                 LocalDate.of(1446,8,20),
-                                100
+                                100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
@@ -178,7 +196,9 @@ public class FilmControllerTest {
                                 "nisi eiusmod",
                                 "adipisicing",
                                 LocalDate.of(1946,8,20),
-                                -100
+                                -100,
+                                ACTION,
+                                1
                         )
                 ),
                 "not correct error"
