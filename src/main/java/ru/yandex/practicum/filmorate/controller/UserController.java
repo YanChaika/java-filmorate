@@ -44,7 +44,6 @@ public class UserController {
     ) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
         checkIdOrThrowIfNullOrZeroOrLess(friendId);
-        //return
         userService.addFriends(id, friendId);
     }
 
@@ -55,7 +54,6 @@ public class UserController {
     ) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
         checkIdOrThrowIfNullOrZeroOrLess(friendId);
-        //return
         userService.removeFromFriends(id, friendId);
     }
 

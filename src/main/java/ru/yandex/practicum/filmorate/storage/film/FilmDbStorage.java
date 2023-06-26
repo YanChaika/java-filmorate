@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,6 +21,7 @@ import java.util.*;
 
 @Component
 @Primary
+@Slf4j
 public class FilmDbStorage implements FilmStorage {
 
     private final LikesDbStorage likesDbStorage;
@@ -91,7 +93,7 @@ public class FilmDbStorage implements FilmStorage {
         List<Film> films = jdbcTemplate.query("SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID FROM PUBLIC.FILMS", FilmDbStorage::cons);
         for (Film film : films) {
             List<Genre> genres = new ArrayList<>();
-            if(film.getGenres() != null) {
+            if (film.getGenres() != null) {
                 for (int i = 0; i < film.getGenres().size(); i++) {
                     genres.add(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get());
                 }
@@ -102,7 +104,7 @@ public class FilmDbStorage implements FilmStorage {
                         genres.add(genreDbStorage.getGenreById(filmByGenres.getGenreId()).get());
                     }
                 } catch (IncorrectIdException e) {
-
+                    log.info("");
                 }
             }
             film.setGenres(genres);
@@ -126,7 +128,7 @@ public class FilmDbStorage implements FilmStorage {
         final List<Film> films = jdbcTemplate.query(sqlQuery, FilmDbStorage::cons, id);
         for (Film film : films) {
             List<Genre> genres = new ArrayList<>();
-            if(film.getGenres() != null) {
+            if (film.getGenres() != null) {
                 for (int i = 0; i < film.getGenres().size(); i++) {
                     film.getGenres().get(i).setName(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get().getName());
                     genres.add(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get());
@@ -138,7 +140,7 @@ public class FilmDbStorage implements FilmStorage {
                     genres.add(genreDbStorage.getGenreById(filmByGenres.getGenreId()).get());
                 }
             } catch (IncorrectIdException e) {
-
+                log.info("");
             }
             film.setGenres(genres);
 
