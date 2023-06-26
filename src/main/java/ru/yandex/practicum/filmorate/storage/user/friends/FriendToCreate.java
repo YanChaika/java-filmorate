@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user.friends;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ru.yandex.practicum.filmorate.model.Friend;
+
 @Getter
 @AllArgsConstructor
 public class FriendToCreate {
