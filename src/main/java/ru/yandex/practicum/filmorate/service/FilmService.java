@@ -93,11 +93,11 @@ public class FilmService {
         } else {
             film.getMpa().setName(mpaDbStorage.getMpaById(film.getMpa().getId()).getName());
             Film filmToReturn = filmStorage.create(film);
-            if(film.getRate() != 0) {
+            if (film.getRate() != 0) {
                 likesDbStorage.create(new LikeToCreate(filmToReturn.getId(), 0));
             }
             List<Genre> genres = new ArrayList<>();
-            if(film.getGenres() != null) {
+            if (film.getGenres() != null) {
                 for (int i = 0; i < film.getGenres().size(); i++) {
                     film.getGenres().get(i).setName(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get().getName());
                     genresDbStorage.create(new FilmByGenres(filmToReturn.getId(), film.getGenres().get(i).getId()));
