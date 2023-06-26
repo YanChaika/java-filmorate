@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public interface UserStorage {
     List<User> getAll();
 
@@ -13,5 +16,5 @@ public interface UserStorage {
 
     User delete(User user);
 
-    User getById(Integer id);
+    Optional<User> getById(Integer id);
 }

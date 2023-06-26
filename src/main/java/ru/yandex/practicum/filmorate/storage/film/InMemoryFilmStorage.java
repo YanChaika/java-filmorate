@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exceptions.FilmAlreadyException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmMPA;
 
 import java.util.*;
 
@@ -66,20 +68,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Set<Film> getSortedFilms() {
-        Set<Film> filmsByLikes;
-        if (!films.isEmpty()) {
-            filmsByLikes = new TreeSet<>(new Comparator<Film>() {
-                @Override
-                public int compare(Film o1, Film o2) {
-                    return Integer.compare(o2.getCountLikes(), o1.getCountLikes());
-                }
-            });
-            for (Integer integer : films.keySet()) {
-                filmsByLikes.add(films.get(integer));
-            }
-            return filmsByLikes;
-        }
-        return new HashSet<>();
+    public List<Film> getSortedFilms() {
+
+        return new ArrayList<>();
     }
 }

@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.FilmMPA;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -35,27 +38,26 @@ public class FilmController {
     public Film getFilmById(@PathVariable Integer id) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         return filmService.getFilmById(id);
-
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public Film postLikeToFilm(
+    public void postLikeToFilm(
             @PathVariable Integer id,
             @PathVariable Integer userId
     ) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         checkFilmIdOrThrowIfNullOrZeroOrLess(userId);
-        return filmService.addLike(id, userId);
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public Film removeLikeFromFilm(
+    public void removeLikeFromFilm(
             @PathVariable Integer id,
             @PathVariable Integer userId
     ) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         checkFilmIdOrThrowIfNullOrZeroOrLess(userId);
-        return filmService.removeLike(id, userId);
+        filmService.removeLike(id, userId);
     }
 
     @GetMapping("/films/popular")
@@ -77,5 +79,27 @@ public class FilmController {
         if (id < 1) {
             throw new IncorrectIdException("id меньше 1");
         }
+    }
+
+    @GetMapping("/genres")
+    public List<Genre> getGenres() {
+        return filmService.getAllGenres();
+    }
+
+    @GetMapping("/genres/{id}")
+    public Optional<Genre> getFilmGenreById(@PathVariable Integer id) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(id);
+        return filmService.getGenreById(id);
+    }
+
+    @GetMapping("/mpa")
+    public List<FilmMPA> getMpa() {
+        return filmService.getAllMpa();
+    }
+
+    @GetMapping("/mpa/{id}")
+    public Optional<FilmMPA> getFilmMpaById(@PathVariable Integer id) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(id);
+        return filmService.getMpaById(id);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class Film {
@@ -15,16 +15,26 @@ public class Film {
     private final String description;
     private final LocalDate releaseDate;
     private final int duration;
-    private Set<Integer> likes;
-    private int countLikes = 0;
-    private final FilmGenre genre;
-    private final int ratingId;
+    private int rate;
+    private List<Genre> genres;
+    private FilmMPA mpa;
 
-    public Set<Integer> getLikes() {
-        return likes;
+    public Film(int id,
+                String name,
+                String description,
+                LocalDate releaseDate,
+                int duration,
+                FilmMPA mpa
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 
-    public void setLikes(Set<Integer> likes) {
-        this.likes = likes;
+    public Film asCreated(int id) {
+        return new Film(id, name, description, releaseDate, duration, mpa);
     }
 }

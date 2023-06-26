@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -58,10 +59,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Integer id) {
+    public Optional<User> getById(Integer id) {
         if (!users.containsKey(id)) {
             throw new IncorrectIdException("user c id н найден");
         }
-        return users.get(id);
+        return Optional.of(users.get(id));
     }
 }
