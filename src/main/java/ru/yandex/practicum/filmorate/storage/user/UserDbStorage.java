@@ -28,7 +28,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-            String sqlQuery = "INSERT INTO PUBLIC.USERS (USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY) " +
+            String sqlQuery = "INSERT INTO PUBLIC.users (USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY) " +
                     "VALUES(?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -52,7 +52,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User update(User user) {
         getById(user.getId());
-        String sqlQuery = "UPDATE PUBLIC.USERS SET USER_EMAIL = ?, USER_LOGIN = ?, USER_NAME = ?, USER_BIRTHDAY = ? WHERE USER_ID = ?";
+        String sqlQuery = "UPDATE PUBLIC.users SET USER_EMAIL = ?, USER_LOGIN = ?, USER_NAME = ?, USER_BIRTHDAY = ? " +
+                "WHERE USER_ID = ?";
         jdbcTemplate.update(
                 sqlQuery,
                 user.getEmail(),
@@ -66,7 +67,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        List<User> users = jdbcTemplate.query("SELECT * FROM PUBLIC.USERS", UserDbStorage::cons);
+        List<User> users = jdbcTemplate.query("SELECT * FROM PUBLIC.users", UserDbStorage::cons);
         if (users.isEmpty()) {
             throw new IncorrectIdException("Users is empty");
         }
@@ -75,7 +76,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> getById(Integer id) {
-        final String sqlQuery = "SELECT USER_ID, USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY, FROM PUBLIC.USERS WHERE USER_ID = ?";
+        final String sqlQuery = "SELECT USER_ID, USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY, FROM PUBLIC.users " +
+                "WHERE USER_ID = ?";
         final List<User> users = jdbcTemplate.query(sqlQuery, UserDbStorage::cons, id);
 
         if (users.isEmpty()) {

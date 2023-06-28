@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class Film {
 
-    private int id;
+    private final int id;
     @NonNull
     private final String name;
     private final String description;
@@ -17,22 +17,7 @@ public class Film {
     private final int duration;
     private int rate;
     private List<Genre> genres;
-    private FilmMPA mpa;
-
-    public Film(int id,
-                String name,
-                String description,
-                LocalDate releaseDate,
-                int duration,
-                FilmMPA mpa
-    ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.mpa = mpa;
-    }
+    private final FilmMPA mpa;
 
     public Film asCreated(int id) {
         return new Film(id, name, description, releaseDate, duration, mpa);

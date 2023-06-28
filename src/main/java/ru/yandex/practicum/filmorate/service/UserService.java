@@ -1,14 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-import ru.yandex.practicum.filmorate.storage.user.friends.FriendDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.friends.FriendToCreate;
+import ru.yandex.practicum.filmorate.storage.user.friends.FriendStorage;
 
 
 import java.time.LocalDate;
@@ -17,25 +16,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     @Autowired
     private final UserStorage userStorage;
-    private final FriendDbStorage friendDbStorage;
-
-    public UserService(UserStorage userStorage, FriendDbStorage friendDbStorage) {
-        this.userStorage = userStorage;
-        this.friendDbStorage = friendDbStorage;
-    }
+    private final FriendStorage friendStorage;
 
     public void addFriends(Integer id, Integer friendId) {
-        friendDbStorage.create(new FriendToCreate(id, friendId));
+        friendStorage.create(getById(id), getById(friendId));
     }
 
     public void removeFromFriends(Integer id, Integer friendId) {
         try {
             Optional<User> userToUpdate = userStorage.getById(id);;
-            friendDbStorage.remove(new Friend(id, friendId));
+            friendStorage.remove(getById(id), getById(friendId));
         } catch (NullPointerException e) {
             throw new IncorrectIdException("Film для удаления не найден");
         }
@@ -44,10 +39,10 @@ public class UserService {
     public List<User> getAllFriends(Integer id) {
         List<User> toReturn = new ArrayList<>();
         if (userStorage.getById(id).isPresent()) {
-            List<Friend> friendsById = friendDbStorage.getAllById(id);
+            List<Integer> friendsById = friendStorage.getAllById(id);
             if (!friendsById.isEmpty()) {
                 for (int i = 0; i < friendsById.size(); i++) {
-                    toReturn.add(userStorage.getById(friendsById.get(i).getFriendId()).get());
+                    toReturn.add(getById(friendsById.get(i)));
                 }
             }
         }

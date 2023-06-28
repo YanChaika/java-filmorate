@@ -46,7 +46,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        String sqlQuery = "INSERT INTO PUBLIC.FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID) VALUES(?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO PUBLIC.films (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID) " +
+                "VALUES(?, ?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -70,7 +71,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         getFilmById(film.getId());
-            String sqlQuery = "UPDATE PUBLIC.FILMS SET " +
+            String sqlQuery = "UPDATE PUBLIC.films SET " +
                     "film_name = ?, " +
                     "description = ?, " +
                     "release_date = ?, " +
@@ -90,7 +91,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAll() {
-        List<Film> films = jdbcTemplate.query("SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID FROM PUBLIC.FILMS", FilmDbStorage::cons);
+        List<Film> films = jdbcTemplate.query("SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, " +
+                "RATING_ID FROM PUBLIC.films", FilmDbStorage::cons);
         for (Film film : films) {
             List<Genre> genres = new ArrayList<>();
             if (film.getGenres() != null) {
@@ -124,13 +126,16 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Integer id) {
-        final String sqlQuery = "SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID FROM PUBLIC.FILMS WHERE FILM_ID = ?";
+        final String sqlQuery = "SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID " +
+                "FROM PUBLIC.films WHERE FILM_ID = ?";
         final List<Film> films = jdbcTemplate.query(sqlQuery, FilmDbStorage::cons, id);
         for (Film film : films) {
             List<Genre> genres = new ArrayList<>();
             if (film.getGenres() != null) {
                 for (int i = 0; i < film.getGenres().size(); i++) {
-                    film.getGenres().get(i).setName(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get().getName());
+                    film.getGenres().get(i).setName(
+                            genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get().getName()
+                    );
                     genres.add(genreDbStorage.getGenreById(film.getGenres().get(i).getId()).get());
                 }
             }
@@ -157,14 +162,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getSortedFilms() {
-        Set<Like> sortedFilmsIdByLike = likesDbStorage.getSortedFilms();
+        Set<Integer> sortedFilmsIdByLike = likesDbStorage.getSortedFilms();
         List<Film> countBySortedFilms = new ArrayList<>();
-        for (Like like : sortedFilmsIdByLike) {
-            countBySortedFilms.add(getFilmById(like.getFilmId()));
+        if (!sortedFilmsIdByLike.isEmpty()) {
+            for (Integer integer : sortedFilmsIdByLike) {
+                countBySortedFilms.add(getFilmById(integer));
+            }
         }
         return countBySortedFilms;
     }
-
 
     private static Film cons(ResultSet rs, int rowNum) throws SQLException {
         FilmMPA filmMPA = new FilmMPA(rs.getInt("rating_id"), null);

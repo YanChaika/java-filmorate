@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class GenreDbStorage {
+public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -19,6 +19,7 @@ public class GenreDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<Genre> getAll() {
         return jdbcTemplate.query("SELECT GENRE_ID, GENRE_NAME FROM PUBLIC.FILM_GENRE", GenreDbStorage::cons);
     }
@@ -30,6 +31,7 @@ public class GenreDbStorage {
         );
     }
 
+    @Override
     public Optional<Genre> getGenreById(int id) {
         final String sqlQuery = "SELECT GENRE_ID, GENRE_NAME FROM PUBLIC.FILM_GENRE WHERE GENRE_ID = ?";
         final List<Genre> genre = jdbcTemplate.query(sqlQuery, GenreDbStorage::cons, id);

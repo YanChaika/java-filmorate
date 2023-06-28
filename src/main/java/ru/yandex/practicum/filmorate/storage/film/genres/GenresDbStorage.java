@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class GenresDbStorage {
+public class GenresDbStorage implements GenresStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,6 +21,7 @@ public class GenresDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public FilmByGenres create(FilmByGenres filmByGenres) {
         String sqlQuery = "INSERT INTO PUBLIC.FILM_BY_GENRES (film_id, genre_id) values (?, ?)";
 
@@ -38,6 +39,7 @@ public class GenresDbStorage {
         return filmByGenres;
     }
 
+    @Override
     public void remove(int id) {
         String sqlQuery = "DELETE FROM PUBLIC.FILM_BY_GENRES WHERE film_id = ?";
         jdbcTemplate.update(
@@ -46,6 +48,7 @@ public class GenresDbStorage {
         );
     }
 
+    @Override
     public List<FilmByGenres> getAll() {
         return jdbcTemplate.query("SELECT FILM_ID, GENRE_ID FROM PUBLIC.FILM_BY_GENRES", GenresDbStorage::cons);
     }
@@ -57,10 +60,10 @@ public class GenresDbStorage {
         );
     }
 
+    @Override
     public List<FilmByGenres> getGenreById(int id) {
         final String sqlQuery = "SELECT FILM_ID, GENRE_ID FROM PUBLIC.FILM_BY_GENRES WHERE FILM_ID = ?";
         final List<FilmByGenres> genres = jdbcTemplate.query(sqlQuery, GenresDbStorage::cons, id);
-
         if (genres.isEmpty()) {
             throw new IncorrectIdException("Genres not found");
         } else {

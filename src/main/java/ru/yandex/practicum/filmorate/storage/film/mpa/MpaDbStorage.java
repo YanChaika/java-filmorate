@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class MpaDbStorage {
+public class MpaDbStorage implements MpaStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,6 +18,7 @@ public class MpaDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<FilmMPA> getAllMpa() {
         return jdbcTemplate.query("SELECT RATING_ID, RATING_NAME FROM PUBLIC.FILM_RATING", MpaDbStorage::cons);
     }
@@ -29,6 +30,7 @@ public class MpaDbStorage {
         );
     }
 
+    @Override
     public FilmMPA getMpaById(int id) {
         final String sqlQuery = "SELECT RATING_ID, RATING_NAME FROM PUBLIC.FILM_RATING WHERE rating_id = ?";
         final List<FilmMPA> rating = jdbcTemplate.query(sqlQuery, MpaDbStorage::cons, id);
