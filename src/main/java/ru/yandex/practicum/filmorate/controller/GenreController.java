@@ -26,14 +26,11 @@ public class GenreController {
 
     @GetMapping("/genres/{id}")
     public Optional<Genre> getFilmGenreById(@PathVariable Integer id) {
-        checkFilmIdOrThrowIfNullOrZeroOrLess(id);
+        checkFilmIdOrThrowIfZeroOrLess(id);
         return filmService.getGenreById(id);
     }
 
-    private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {
-        if (id == null) {
-            throw new IncorrectIdException("id равен null");
-        }
+    private void checkFilmIdOrThrowIfZeroOrLess(Integer id) {
         if (id < 1) {
             throw new IncorrectIdException("id меньше 1");
         }
