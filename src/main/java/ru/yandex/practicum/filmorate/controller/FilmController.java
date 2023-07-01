@@ -35,27 +35,26 @@ public class FilmController {
     public Film getFilmById(@PathVariable Integer id) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         return filmService.getFilmById(id);
-
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public Film postLikeToFilm(
+    public void postLikeToFilm(
             @PathVariable Integer id,
             @PathVariable Integer userId
     ) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         checkFilmIdOrThrowIfNullOrZeroOrLess(userId);
-        return filmService.addLike(id, userId);
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public Film removeLikeFromFilm(
+    public void removeLikeFromFilm(
             @PathVariable Integer id,
             @PathVariable Integer userId
     ) {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         checkFilmIdOrThrowIfNullOrZeroOrLess(userId);
-        return filmService.removeLike(id, userId);
+        filmService.removeLike(id, userId);
     }
 
     @GetMapping("/films/popular")
