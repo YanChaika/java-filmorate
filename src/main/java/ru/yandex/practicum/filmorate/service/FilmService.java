@@ -138,4 +138,11 @@ public class FilmService {
     public Optional<FilmMPA> getMpaById(int id) {
         return Optional.of(mpaStorage.getMpaById(id));
     }
+
+    public Review addReview(Review review){
+
+
+        return review;
+    }
+
 }
