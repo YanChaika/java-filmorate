@@ -7,7 +7,6 @@ import lombok.Data;
 import java.lang.reflect.Array;
 
 @Data
-
 @AllArgsConstructor
 public class Review {
     private int reviewId; // id отзыва (первичный ключ)
