@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -57,12 +58,6 @@ public class UserController {
         userService.removeFromFriends(id, friendId);
     }
 
-    @DeleteMapping("/users/{userId}")
-    public void removeUser(@PathVariable Integer userId) {
-        checkIdOrThrowIfNullOrZeroOrLess(userId);
-        userService.removeUser(userId);
-    }
-
     @GetMapping("/users/{id}/friends")
     public List<User> getAllFriends(@PathVariable Integer id) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
@@ -78,6 +73,13 @@ public class UserController {
         checkIdOrThrowIfNullOrZeroOrLess(otherId);
         return userService.compareFriends(id, otherId);
     }
+
+    @GetMapping("/users/{id}/feed")
+    public List<Event> findFeedById(@PathVariable int id) {
+        checkIdOrThrowIfNullOrZeroOrLess(id);
+        return userService.findFeedsById(id);
+    }
+
 
     private void checkIdOrThrowIfNullOrZeroOrLess(Integer id) {
         if (id == null) {
