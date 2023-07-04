@@ -18,7 +18,16 @@ public class Review {
     private int[] usersIdLike; // массив id пользователей поставивших лайк отзыву
     @JsonIgnore
     private int[] usersIdDislike; // массив id пользователей поставивших дизлайк отзыву
+    @JsonIgnore
     private int like; // количество лайков (рейтинг полезности )
+
+    public Review(int reviewId, String content, boolean isPositive, int userId, int filmId) {
+        this.reviewId = reviewId;
+        this.content = content;
+        this.isPositive = isPositive;
+        this.userId = userId;
+        this.filmId = filmId;
+    }
 
     public int getLike() {
         return like=usersIdLike.length-usersIdDislike.length;
