@@ -81,7 +81,7 @@ public class UserDbStorage implements UserStorage {
         final List<User> users = jdbcTemplate.query(sqlQuery, UserDbStorage::cons, id);
 
         if (users.isEmpty()) {
-            throw new IncorrectIdException("user c id не найден");
+            throw new IncorrectIdException("user c id: " + id + " не найден");
         } else if (users.size() > 1) {
             throw new IllegalStateException();
         } else {
@@ -90,8 +90,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User delete(User user) {
-        return null;
+    public void delete(Integer id) {
+        String sqlQuery = "DELETE FROM PUBLIC.users WHERE USER_ID = ?";
+
+        jdbcTemplate.update(sqlQuery, id);
     }
 
     private static User cons(ResultSet rs, int rowNum) throws SQLException {

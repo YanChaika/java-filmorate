@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -55,6 +56,12 @@ public class FilmController {
         checkFilmIdOrThrowIfNullOrZeroOrLess(id);
         checkFilmIdOrThrowIfNullOrZeroOrLess(userId);
         filmService.removeLike(id, userId);
+    }
+
+    @DeleteMapping("/films/{filmId}")
+    public void removeFilm(@PathVariable Integer filmId) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(filmId);
+        filmService.removeFilm(filmId);
     }
 
     @GetMapping("/films/popular")
