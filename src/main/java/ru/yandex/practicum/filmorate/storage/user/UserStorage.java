@@ -12,7 +12,7 @@ public interface UserStorage {
 
     User update(User user);
 
-    User delete(User user);
+    void delete(Integer id);
 
     Optional<User> getById(Integer id);
 }

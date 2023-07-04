@@ -5,8 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.feeds.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.user.feeds.eventType.EventTypeStorage;
+import ru.yandex.practicum.filmorate.storage.user.feeds.operation.OperationStorage;
 import ru.yandex.practicum.filmorate.storage.user.friends.FriendStorage;
 
 
@@ -19,9 +23,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
+    private final FeedStorage feedStorage;
+    private final EventTypeStorage eventTypeStorage;
+    private final OperationStorage operationStorage;
 
     public void addFriends(Integer id, Integer friendId) {
         friendStorage.create(getById(id), getById(friendId));
@@ -70,6 +76,10 @@ public class UserService {
         return userStorage.getAll();
     }
 
+    public void removeUser(Integer id) {
+        userStorage.delete(id);
+    }
+
     public User create(User user) {
         if ((user.getName() == null) || (user.getName().isBlank())) {
             user.setName(user.getLogin());
@@ -100,5 +110,14 @@ public class UserService {
 
     public User getById(Integer id) {
         return userStorage.getById(id).get();
+    }
+
+    public List<Event> findFeedsById(int id) {
+        List<Event> feeds = feedStorage.findEventsByUserId(id);
+        for (Event event : feeds) {
+            event.setEventType(eventTypeStorage.findById(event.getEventType().getId()).get());
+            event.setOperation(operationStorage.findById(event.getOperation().getId()).get());
+        }
+        return feeds;
     }
 }
