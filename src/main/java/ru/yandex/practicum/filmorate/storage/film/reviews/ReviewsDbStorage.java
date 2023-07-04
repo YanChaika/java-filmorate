@@ -32,4 +32,5 @@ public class ReviewsDbStorage implements ReviewsStorage {
         review.setReviewId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         return review;
     }
+
 }
