@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.PreparedStatement;
 import java.util.*;
 
@@ -67,6 +68,18 @@ public class LikesDbStorage implements LikesStorage {
             filmsId.add(userRows.getInt("film_id"));
         }
         return filmsId;
+    }
+
+    @Override
+    public List<Integer> getFilmIdByUserId(int id) {
+        List<Integer> filmsIdByUser = new ArrayList<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT film_id " +
+                "FROM PUBLIC.FILM_LIKES " +
+                "WHERE user_id = ?", id);
+        while (userRows.next()) {
+            filmsIdByUser.add(userRows.getInt("film_id"));
+        }
+        return filmsIdByUser;
     }
 
 
