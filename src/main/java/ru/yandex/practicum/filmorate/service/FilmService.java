@@ -8,8 +8,9 @@ import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final GenresStorage genresStorage;
     private final MpaStorage mpaStorage;
+    private final ReviewsStorage reviewsStorage; // функционал по отзывам - тз 12 групповой проект
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
     public void addLike(Integer id, Integer userId) {
@@ -49,7 +51,7 @@ public class FilmService {
         if (!filmsSorted.isEmpty()) {
             int minCountOrSizeOfSortedFilms;
             if (filmsSorted.size() < count) {
-                 minCountOrSizeOfSortedFilms = filmsSorted.size();
+                minCountOrSizeOfSortedFilms = filmsSorted.size();
             } else {
                 minCountOrSizeOfSortedFilms = count;
             }
@@ -139,10 +141,25 @@ public class FilmService {
         return Optional.of(mpaStorage.getMpaById(id));
     }
 
-    public Review addReview(Review review){
 
-
-        return review;
+    //ТЗ 12 групповой проект
+    public Review addReview(Review review) {
+        return reviewsStorage.addReview(review);
     }
 
+    public Review updateReview(Review review) {
+        return reviewsStorage.updateReview(review);
+    }
+
+    public Review getReviewById(int id) {
+        return reviewsStorage.getReviewById(id);
+    }
+
+    public void deleteReviewById(int id) {
+        reviewsStorage.deleteReviewById(id);
+    }
+
+    public List<Review> getReviews(int filmId) {
+        return reviewsStorage.getReviews(filmId);
+    }
 }

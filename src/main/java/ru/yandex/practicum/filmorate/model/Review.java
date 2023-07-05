@@ -29,6 +29,9 @@ public class Review {
         this.filmId = filmId;
     }
 
+    public Review() {
+    }
+
     public int getLike() {
         return like=usersIdLike.length-usersIdDislike.length;
     }

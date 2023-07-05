@@ -67,6 +67,6 @@ CREATE TABLE IF NOT EXISTS PUBLIC.REVIEWS (
 --  USERS_ID_LIKE ARRAY,
   --USERS_ID_DISLIKE ARRAY
    FOREIGN KEY (film_id) REFERENCES films (film_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    UNIQUE (film_id, user_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+  --  UNIQUE (film_id, user_id)
 );

@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Review;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -33,7 +34,6 @@ public class ReviewsDbStorage implements ReviewsStorage {
                     return stmt;
                 },
                 keyHolder);
-        review.setReviewId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         return review;
     }
 
@@ -42,7 +42,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
         String sqlQuery = "UPDATE PUBLIC.REVIEWS SET " +
                 "content = ?, " +
                 "IS_POSITIVE = ?, " +
-                "user_ID = ? " +
+                "user_ID = ?, " +
                 "film_ID = ?" +
                 " WHERE REVIEW_ID = ?";
         jdbcTemplate.update(
@@ -79,5 +79,20 @@ public class ReviewsDbStorage implements ReviewsStorage {
         Review review = getReviewById(id);
         String sqlQuery = "delete from PUBLIC.REVIEWS where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getReviewId());
+    }
+
+    //Получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10.
+    public List<Review> getReviews(int filmId) {
+        String sqlQuery = "SELECT * FROM PUBLIC.REVIEWS where film_id = ?";
+        return jdbcTemplate.query(sqlQuery + filmId, (rs, rowNum) -> {
+            Review review = new Review(
+                    rs.getInt("REVIEW_ID"),
+                    rs.getString("content"),
+                    rs.getBoolean("IS_POSITIVE"),
+                    rs.getInt("user_ID"),
+                    rs.getInt("film_ID")
+            );
+            return review;
+        });
     }
 }
