@@ -64,9 +64,16 @@ public class FilmController {
         if (count == null) {
             countFilmsByLikes = 10;
         } else {
-        countFilmsByLikes = Integer.parseInt(count);
+            countFilmsByLikes = Integer.parseInt(count);
         }
         return filmService.getCountFilmsByLike(countFilmsByLikes);
+    }
+
+    @GetMapping("/films/common")
+    public List<Film> getTwoUsersCommonFilms(
+            @RequestParam Integer userId,
+            @RequestParam Integer friendId) {
+        return filmService.getTwoUsersCommonFilms(userId, friendId);
     }
 
     private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {

@@ -7,17 +7,23 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmByGenres;
+import ru.yandex.practicum.filmorate.model.FilmMPA;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresDbStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Component
 @Primary
@@ -32,10 +38,10 @@ public class FilmDbStorage implements FilmStorage {
 
     public FilmDbStorage(
             JdbcTemplate jdbcTemplate,
-                         LikesDbStorage likesDbStorage,
-                         MpaDbStorage mpaDbStorage,
-                         GenresDbStorage genresDbStorage,
-                         GenreDbStorage genreDbStorage
+            LikesDbStorage likesDbStorage,
+            MpaDbStorage mpaDbStorage,
+            GenresDbStorage genresDbStorage,
+            GenreDbStorage genreDbStorage
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.likesDbStorage = likesDbStorage;
@@ -71,22 +77,22 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         getFilmById(film.getId());
-            String sqlQuery = "UPDATE PUBLIC.films SET " +
-                    "film_name = ?, " +
-                    "description = ?, " +
-                    "release_date = ?, " +
-                    "duration = ?, " +
-                    "rating_id = ? WHERE film_id = ?";
-            jdbcTemplate.update(
-                    sqlQuery,
-                    film.getName(),
-                    film.getDescription(),
-                    film.getReleaseDate(),
-                    film.getDuration(),
-                    film.getMpa().getId(),
-                    film.getId()
-            );
-            return film;
+        String sqlQuery = "UPDATE PUBLIC.films SET " +
+                "film_name = ?, " +
+                "description = ?, " +
+                "release_date = ?, " +
+                "duration = ?, " +
+                "rating_id = ? WHERE film_id = ?";
+        jdbcTemplate.update(
+                sqlQuery,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId(),
+                film.getId()
+        );
+        return film;
     }
 
     @Override
@@ -170,6 +176,18 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
         return countBySortedFilms;
+    }
+
+    @Override
+    public List<Film> getTwoUsersCommonFilms(Integer userId, Integer friendId) {
+        Set<Integer> commonFilmsId = likesDbStorage.getCommonFilmsId(userId, friendId);
+        List<Film> commonFilms = new ArrayList<>();
+        if (!commonFilmsId.isEmpty()) {
+            for (Integer integer : commonFilmsId) {
+                commonFilms.add(getFilmById(integer));
+            }
+        }
+        return commonFilms;
     }
 
     private static Film cons(ResultSet rs, int rowNum) throws SQLException {
