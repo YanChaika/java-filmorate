@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Review;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,12 +22,22 @@ public class ReviewsDbStorage implements ReviewsStorage {
     private final JdbcTemplate jdbcTemplate;
 
     //Добавление нового отзыва
+    @Override
     public Review addReview(Review review) {
+        if (review.getFilmId()<0){
+            log.error("Film with id " + review.getFilmId() + " not found");
+            throw new IncorrectIdException("Film with id " + review.getFilmId() + " not found");
+        }
+        if (review.getUserId()<0){
+            log.error("User with id " + review.getUserId() + " not found");
+            throw new IncorrectIdException("User with id " + review.getUserId() + " not found");
+        }
+
         String sqlQuery = "INSERT INTO PUBLIC.REVIEWS (content, IS_POSITIVE,user_Id,film_Id) values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
-                    PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                    PreparedStatement stmt = connection.prepareStatement(sqlQuery,new String[]{"REVIEW_ID"});
                     stmt.setString(1, review.getContent());
                     stmt.setBoolean(2, review.isPositive());
                     stmt.setInt(3, review.getUserId());
@@ -34,10 +45,13 @@ public class ReviewsDbStorage implements ReviewsStorage {
                     return stmt;
                 },
                 keyHolder);
+        int id= Objects.requireNonNull(keyHolder.getKey()).intValue();
+        review.setReviewId(id);
         return review;
     }
 
     //Редактирование уже имеющегося отзыва
+    @Override
     public Review updateReview(Review review) {
         String sqlQuery = "UPDATE PUBLIC.REVIEWS SET " +
                 "content = ?, " +
@@ -49,14 +63,15 @@ public class ReviewsDbStorage implements ReviewsStorage {
                 sqlQuery,
                 review.getContent(),
                 review.isPositive(),
+                review.getUserId(),
                 review.getFilmId(),
-                review.getFilmId(),
-                review.getReviewId()
+               review.getReviewId()
         );
         return review;
     }
 
     //Получение отзыва по идентификатору
+    @Override
     public Review getReviewById(int id) {
         SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("select * from PUBLIC.REVIEWS where REVIEW_ID = ?", id);
         if (reviewRows.next()) {
@@ -67,6 +82,8 @@ public class ReviewsDbStorage implements ReviewsStorage {
                     reviewRows.getInt("user_ID"),
                     reviewRows.getInt("film_ID")
             );
+            int useFul = getUseFull(id);
+            review.setUseful(useFul);
             return review;
         } else {
             log.error("Review by id not found");
@@ -75,24 +92,92 @@ public class ReviewsDbStorage implements ReviewsStorage {
     }
 
     //Удаление уже имеющегося отзыва
+    @Override
     public void deleteReviewById(int id) {
         Review review = getReviewById(id);
         String sqlQuery = "delete from PUBLIC.REVIEWS where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, review.getReviewId());
     }
 
-    //Получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10.
-    public List<Review> getReviews(int filmId) {
-        String sqlQuery = "SELECT * FROM PUBLIC.REVIEWS where film_id = ?";
-        return jdbcTemplate.query(sqlQuery + filmId, (rs, rowNum) -> {
-            Review review = new Review(
-                    rs.getInt("REVIEW_ID"),
-                    rs.getString("content"),
-                    rs.getBoolean("IS_POSITIVE"),
-                    rs.getInt("user_ID"),
-                    rs.getInt("film_ID")
-            );
-            return review;
-        });
+
+    //Получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10
+    @Override
+    public List<Review> getReviews(int filmId, int quantity) {
+        List<Review> reviews = new ArrayList<>();
+        String query;
+        if (filmId != 0) {
+            query = "SELECT * FROM public.reviews WHERE film_id = " + filmId;
+        } else {
+            query = "SELECT * FROM public.reviews";
+        }
+
+        if (quantity != 0) {
+            query += " LIMIT " + quantity;
+        }
+        SqlRowSet resultSet = jdbcTemplate.queryForRowSet(query);//statement.executeQuery(query);
+        while (resultSet.next()) {
+//            int reviewId = resultSet.getInt("review_id");
+//            String content = resultSet.getString("content");
+//            boolean isPositive = resultSet.getBoolean("is_positive");
+//            int userId = resultSet.getInt("user_id");
+//            Review review = new Review(reviewId, content, isPositive, userId, filmId);
+            Review review = getReviewById(resultSet.getInt("review_id"));
+            reviews.add(review);
+        }
+        return reviews;
+    }
+
+    //пользователь ставит лайк отзыву
+    @Override
+    public void addLikeReview(int reviewId, int userId) {
+        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                connection -> {
+                    PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                    stmt.setInt(1, userId);
+                    stmt.setInt(2, reviewId);
+                    stmt.setBoolean(3, true);
+                    return stmt;
+                },
+                keyHolder);
+    }
+
+    //пользователь ставит дизлайк отзыву
+    @Override
+    public void addDisLikeReview(int reviewId, int userId) {
+        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                connection -> {
+                    PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                    stmt.setInt(1, userId);
+                    stmt.setInt(2, reviewId);
+                    stmt.setBoolean(3, false);
+                    return stmt;
+                },
+                keyHolder);
+    }
+
+    // пользователь удаляет лайк/дизлайк отзыву
+    @Override
+    public void deleteLikeReview(int reviewId, int userId) {
+        String sqlQuery = "delete from PUBLIC.LIKEREVIEW  where REVIEW_ID = ? AND USER_ID = ?";
+        jdbcTemplate.update(sqlQuery, reviewId, userId);
+    }
+
+    //получение рейтинга полезности отзыва по его id
+    public int getUseFull(int reviewId) {
+        SqlRowSet sqlForLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.LIKEREVIEW where REVIEW_ID = ? AND IS_LIKE = true", reviewId);
+        int like = 0;
+        int disLike = 0;
+        while (sqlForLikes.next()) {
+            like++; // подсчитываем количество лайков
+        }
+        SqlRowSet sqlForDisLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.LIKEREVIEW where REVIEW_ID = ? AND IS_LIKE = false", reviewId);
+        while (sqlForDisLikes.next()) {
+            disLike++; // подсчитываем количество дизлайков
+        }
+        return like - disLike;
     }
 }

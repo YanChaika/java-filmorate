@@ -167,7 +167,7 @@ public class FilmService {
         reviewsStorage.deleteReviewById(id);
     }
 
-    public List<Review> getReviews(int filmId) {
-        return reviewsStorage.getReviews(filmId);
+    public List<Review> getReviews(int filmId, int quantity) {
+        return reviewsStorage.getReviews(filmId, quantity);
     }
 }
