@@ -57,6 +57,12 @@ public class FilmController {
         filmService.removeLike(id, userId);
     }
 
+    @DeleteMapping("/films/{filmId}")
+    public void removeFilm(@PathVariable Integer filmId) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(filmId);
+        filmService.removeFilm(filmId);
+    }
+
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
             @RequestParam(required = false) String count) {

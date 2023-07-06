@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,10 @@ public class FilmService {
         }
     }
 
+    public void removeFilm(Integer id) {
+        filmStorage.delete(id);
+    }
+
     public List<Film> getCountFilmsByLike(Integer count) {
         List<Film> filmsSorted = filmStorage.getSortedFilms();
         List<Film> countOfSortedFilm = new ArrayList<>();
@@ -60,7 +65,10 @@ public class FilmService {
                 countOfSortedFilm.add(filmsSorted.get(i));
             }
         } else {
-            countOfSortedFilm = filmStorage.getAll();
+            // countOfSortedFilm = filmStorage.getAll(); // если таблица likes пустая, то filmStorage.getSortedFilms()
+            // возвращает пустой List, и метод в итоге возвращает список вообще всех фильмов.
+            // предлагаю сделать хотя бы так:
+            countOfSortedFilm = filmStorage.getAll().stream().limit(count).collect(Collectors.toList());
         }
         return countOfSortedFilm;
     }

@@ -57,6 +57,12 @@ public class UserController {
         userService.removeFromFriends(id, friendId);
     }
 
+    @DeleteMapping("/users/{userId}")
+    public void removeUser(@PathVariable Integer userId) {
+        checkIdOrThrowIfNullOrZeroOrLess(userId);
+        userService.removeUser(userId);
+    }
+
     @GetMapping("/users/{id}/friends")
     public List<User> getAllFriends(@PathVariable Integer id) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
@@ -72,7 +78,6 @@ public class UserController {
         checkIdOrThrowIfNullOrZeroOrLess(otherId);
         return userService.compareFriends(id, otherId);
     }
-
 
     private void checkIdOrThrowIfNullOrZeroOrLess(Integer id) {
         if (id == null) {
