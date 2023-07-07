@@ -74,6 +74,25 @@ public class LikesDbStorage implements LikesStorage {
     }
 
     @Override
+    public List<Integer> getSortedFilmsByIds(Set<Integer> filmIds) {
+        List<Integer> result = new ArrayList<>();
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(String.format("SELECT DISTINCT (film_id), COUNT(user_id) " +
+                "FROM PUBLIC.FILM_LIKES " +
+                "WHERE film_id in (%s) " +
+                "GROUP BY film_id ORDER BY COUNT(user_id) DESC", inSql), filmIds.toArray());
+        while (userRows.next()) {
+            result.add(userRows.getInt("film_id"));
+        }
+        for (Integer filmId : filmIds) {
+            if (!result.contains(filmId)) {
+                result.add(filmId);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<Integer> getFilmIdByUserId(int id) {
         List<Integer> filmsIdByUser = new ArrayList<>();
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT film_id " +

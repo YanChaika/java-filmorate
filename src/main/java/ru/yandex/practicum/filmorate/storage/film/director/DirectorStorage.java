@@ -10,7 +10,7 @@ public interface DirectorStorage {
 
     Director updateDirector(Director director);
 
-    Boolean deleteDirector(int directorId);
+    void deleteDirector(int directorId);
 
     Director getDirector(int directorId);
 

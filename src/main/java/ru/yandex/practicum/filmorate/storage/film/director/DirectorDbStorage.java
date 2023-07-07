@@ -2,10 +2,6 @@ package ru.yandex.practicum.filmorate.storage.film.director;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-<<<<<<< HEAD
-=======
-import org.springframework.dao.EmptyResultDataAccessException;
->>>>>>> a8f8df4 (add-director, в процессе доработки под postman)
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -55,7 +51,6 @@ public class DirectorDbStorage implements DirectorStorage {
         return director;
     }
 
-
     @Override
     public Director updateDirector(Director director) {
         String sqlQuery = "UPDATE PUBLIC.directors SET DIRECTOR_NAME = ? WHERE DIRECTOR_ID = ?";
@@ -64,13 +59,11 @@ public class DirectorDbStorage implements DirectorStorage {
         return getDirector(director.getId());
     }
 
-
     @Override
-    public Boolean deleteDirector(int directorId) {
+    public void deleteDirector(int directorId) {
         String sqlQuery = "DELETE FROM PUBLIC.directors " +
                 "WHERE DIRECTOR_ID = ?";
         jdbcTemplate.update(sqlQuery, directorId);
-        return true;
     }
 
     @Override

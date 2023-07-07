@@ -29,6 +29,4 @@ public class ErrorHandler {
     public ErrorResponse handleAlreadyPresentEsception(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
-
-
 }

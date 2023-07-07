@@ -24,9 +24,9 @@ public class DirectorService {
         return directorStorage.updateDirector(director);
     }
 
-    public Boolean deleteDirector(int directorId) {
+    public void deleteDirector(int directorId) {
         log.info("Удаление режиссера {}", directorId);
-        return directorStorage.deleteDirector(directorId);
+        directorStorage.deleteDirector(directorId);
     }
 
     public Director getDirectorById(int directorId) {

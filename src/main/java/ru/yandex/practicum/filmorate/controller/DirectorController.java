@@ -24,7 +24,6 @@ public class DirectorController {
         return directorService.getDirectorById(id);
     }
 
-
     @PostMapping
     public Director createDirector(@Valid @RequestBody Director director) {
         return directorService.createDirector(director);
@@ -36,7 +35,7 @@ public class DirectorController {
     }
 
     @DeleteMapping("/{id}")
-    public Boolean deleteDirector(@PathVariable int id) {
-        return directorService.deleteDirector(id);
+    public void deleteDirector(@PathVariable int id) {
+        directorService.deleteDirector(id);
     }
 }

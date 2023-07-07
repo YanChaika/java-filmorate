@@ -12,6 +12,7 @@ public interface LikesStorage {
 
     Set<Integer> getSortedFilms();
 
+    List<Integer> getSortedFilmsByIds(Set<Integer> filmIds);
     List<Integer> getFilmIdByUserId(int id);
 
     List<Integer> getSortedFilmsByIds(Set<Integer> filmIds);
