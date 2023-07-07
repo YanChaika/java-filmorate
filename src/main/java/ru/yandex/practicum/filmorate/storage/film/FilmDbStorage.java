@@ -57,21 +57,40 @@ public class FilmDbStorage implements FilmStorage {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        final Film finalFilm = film;
+
         jdbcTemplate.update(
                 connection -> {
                     PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"film_id"});
-                    stmt.setString(1, film.getName());
-                    stmt.setString(2, film.getDescription());
-                    stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
-                    stmt.setInt(4, film.getDuration());
-                    stmt.setInt(5, film.getMpa().getId());
+                    stmt.setString(1, finalFilm.getName());
+                    stmt.setString(2, finalFilm.getDescription());
+                    stmt.setDate(3, Date.valueOf(finalFilm.getReleaseDate()));
+                    stmt.setInt(4, finalFilm.getDuration());
+                    stmt.setInt(5, finalFilm.getMpa().getId());
                     return stmt;
                 },
                 keyHolder);
 
-        return film.asCreated(
-                Objects.requireNonNull(keyHolder.getKey()).intValue()
-        );
+        int filmId = Objects.requireNonNull(keyHolder.getKey()).intValue();
+        film = film.asCreated(filmId);
+
+        if (film.getDirectors() != null) {
+            saveFilmDirectors(film);
+        }
+
+        return film;
+    }
+
+    private void saveFilmDirectors(Film film) {
+        String sqlQuery = "INSERT INTO PUBLIC.films_director (FILM_ID, DIRECTOR_ID) VALUES (?, ?)";
+        film.getDirectors()
+                .forEach(director ->
+                        jdbcTemplate.update(connection -> {
+                            PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+                            stmt.setLong(1, film.getId());
+                            stmt.setInt(2, director.getId());
+                            return stmt;
+                        }));
     }
 
     @Override
@@ -123,6 +142,7 @@ public class FilmDbStorage implements FilmStorage {
         } else {
             return films;
         }
+
     }
 
     @Override
