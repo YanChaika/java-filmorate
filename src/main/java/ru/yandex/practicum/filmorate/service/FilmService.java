@@ -54,7 +54,7 @@ public class FilmService {
         if (!filmsSorted.isEmpty()) {
             int minCountOrSizeOfSortedFilms;
             if (filmsSorted.size() < count) {
-                 minCountOrSizeOfSortedFilms = filmsSorted.size();
+                minCountOrSizeOfSortedFilms = filmsSorted.size();
             } else {
                 minCountOrSizeOfSortedFilms = count;
             }
