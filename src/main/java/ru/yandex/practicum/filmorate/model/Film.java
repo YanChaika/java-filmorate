@@ -22,6 +22,8 @@ public class Film {
     private Set<Director> directors;
 
     public Film asCreated(int id) {
-        return new Film(id, name, description, releaseDate, duration, mpa);
+        Film film = new Film(id, name, description, releaseDate, duration, mpa);
+        film.setDirectors(directors);
+        return film;
     }
 }

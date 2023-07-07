@@ -63,6 +63,15 @@ public class FilmController {
         filmService.removeFilm(filmId);
     }
 
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getByDirectorId(
+            @PathVariable Integer directorId,
+            @RequestParam(required = false) String sortBy
+    ) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(directorId);
+        return filmService.getByDirectorId(directorId, sortBy);
+    }
+
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
             @RequestParam(required = false) String count) {

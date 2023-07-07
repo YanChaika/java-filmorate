@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film.likes;
 
+import java.util.List;
 import java.util.Set;
 
 public interface LikesStorage {
@@ -12,4 +13,5 @@ public interface LikesStorage {
 
     Set<Integer> getSortedFilms();
 
+    List<Integer> getSortedFilmsByIds(Set<Integer> filmIds);
 }

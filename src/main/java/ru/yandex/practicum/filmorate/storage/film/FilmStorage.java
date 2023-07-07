@@ -18,7 +18,7 @@ public interface FilmStorage {
 
     List<Film> getSortedFilms();
 
-    //List<Film> getFilmsByDirectorSortedByYear(int directorId);
+    List<Film> getFilmsByDirectorSortedByYear(int directorId);
 
-    //List<Film> getFilmsByDirectorSortLikes(int directorId);
+    List<Film> getFilmsByDirectorSortLikes(int directorId);
 }
