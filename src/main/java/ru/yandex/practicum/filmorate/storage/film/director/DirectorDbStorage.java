@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorate.storage.film.director;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
-import ru.yandex.practicum.filmorate.controller.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 
@@ -52,7 +50,6 @@ public class DirectorDbStorage implements DirectorStorage {
 
         return director;
     }
-
 
 
     @Override
