@@ -146,4 +146,45 @@ public class FilmService {
     public Optional<FilmMPA> getMpaById(int id) {
         return Optional.of(mpaStorage.getMpaById(id));
     }
+
+    public List<Film> getSortedFilmsByGenreAndYear(int count, int genreId, int year) {
+        List<Film> filmsSorted = getCountFilmsByLike(count);
+        Set<Film> sortedFilmsByGenre = new HashSet<>();
+        Set<Film> sortedFilmsByYear = new HashSet<>();
+        Set<Film> sortedFilms = new HashSet<>();
+        boolean filmByGenresNotFound = false;
+        boolean filmByYearNotFound = false;
+        if (genreId != 0) {
+            for (Film film : filmsSorted) {
+                List<Genre> genres = film.getGenres();
+                for (Genre genre : genres) {
+                    if (genre.getId() == genreId) {
+                        sortedFilmsByGenre.add(film);
+                    }
+                }
+            }
+            if (sortedFilmsByGenre.isEmpty()) {
+                filmByGenresNotFound = true;
+            }
+        }
+        if (year != 0) {
+            for (Film film : filmsSorted) {
+                if (film.getReleaseDate().getYear() == year) {
+                    sortedFilmsByYear.add(film);
+                }
+            }
+            if (sortedFilmsByYear.isEmpty()) {
+                filmByYearNotFound = true;
+            }
+        }
+        if ((filmByGenresNotFound) && (filmByYearNotFound)) {
+            return new ArrayList<>();
+        }
+        if ((genreId != 0) || (year != 0)) {
+            sortedFilms.addAll(sortedFilmsByGenre);
+            sortedFilms.addAll(sortedFilmsByYear);
+            return new ArrayList<>(sortedFilms);
+        }
+        return filmsSorted;
+    }
 }

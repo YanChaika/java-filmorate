@@ -63,18 +63,6 @@ public class FilmController {
         filmService.removeFilm(filmId);
     }
 
-    @GetMapping("/films/popular")
-    public List<Film> getCountPopularFilmByLikes(
-            @RequestParam(required = false) String count) {
-        int countFilmsByLikes;
-        if (count == null) {
-            countFilmsByLikes = 10;
-        } else {
-        countFilmsByLikes = Integer.parseInt(count);
-        }
-        return filmService.getCountFilmsByLike(countFilmsByLikes);
-    }
-
     private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {
         if (id == null) {
             throw new IncorrectIdException("id равен null");
@@ -82,5 +70,32 @@ public class FilmController {
         if (id < 1) {
             throw new IncorrectIdException("id меньше 1");
         }
+    }
+
+    @GetMapping("/films/popular")
+    public List<Film> getCountPopularFilmByLikes(
+            @RequestParam(required = false) String count,
+            @RequestParam(required = false) String genreId,
+            @RequestParam(required = false) String year
+    ) {
+        int genreIdByRequest = 0;
+        if (genreId != null) {
+            genreIdByRequest = Integer.parseInt(genreId);
+        }
+        int yearByRequest = 0;
+        if (year != null) {
+            yearByRequest = Integer.parseInt(year);
+        }
+        return filmService.getSortedFilmsByGenreAndYear(getCount(count), genreIdByRequest, yearByRequest);
+    }
+
+    private Integer getCount(String count) {
+        int countFilmsByLikes;
+        if (count == null) {
+            countFilmsByLikes = 10;
+        } else {
+            countFilmsByLikes = Integer.parseInt(count);
+        }
+        return countFilmsByLikes;
     }
 }
