@@ -9,13 +9,12 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectReviewException;
-import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.sql.PreparedStatement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Repository
 @Data
@@ -62,12 +61,8 @@ public class ReviewsDbStorage implements ReviewsStorage {
                 sqlQuery,
                 review.getContent(),
                 review.isPositive(),
-                //review.getUserId(),
-                // review.getFilmId(),
                 review.getReviewId()
         );
-        // int useful = getUseFull(review.getReviewId());
-        ///review.setUseful(useful);
         return getReviewById(review.getReviewId());
     }
 
@@ -76,7 +71,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     public Review getReviewById(int id) {
         SqlRowSet resultSet = jdbcTemplate.queryForRowSet("select * from PUBLIC.REVIEWS where REVIEW_ID = ?", id);
         if (resultSet.next()) {
-           Review review= Review.builder()
+            Review review = Review.builder()
                     .content(Objects.requireNonNull(resultSet.getString("content")))
                     .isPositive(resultSet.getBoolean("IS_POSITIVE"))
                     .filmId(resultSet.getInt("film_ID"))
@@ -100,7 +95,6 @@ public class ReviewsDbStorage implements ReviewsStorage {
         jdbcTemplate.update(sqlQuery, id);
     }
 
-
     //Получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10
     @Override
     public List<Review> getReviews(int filmId, int quantity) {
@@ -110,8 +104,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
             query = "SELECT * FROM public.reviews WHERE film_id = " + filmId;
             if (quantity != 0) {
                 query += " LIMIT " + quantity;
-            }
-            else {
+            } else {
                 query += " LIMIT 10";
             }
         } else {
