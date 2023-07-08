@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.controller.exceptions.FilmAlreadyException;
-import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
-import ru.yandex.practicum.filmorate.controller.exceptions.UserAlreadyPresentException;
-import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.controller.exceptions.*;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -27,6 +24,11 @@ public class ErrorHandler {
     @ExceptionHandler({FilmAlreadyException.class, UserAlreadyPresentException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleAlreadyPresentEsception(final RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIncorrectReviewException (final IncorrectReviewException e){
         return new ErrorResponse(e.getMessage());
     }
 }

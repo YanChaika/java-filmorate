@@ -37,14 +37,23 @@ public class ReviewController {
         filmService.deleteReviewById(id);
     }
 
-    @GetMapping("/reviews?filmId={filmId}&count={count}")
-    public List<Review> getReviews(@PathVariable int filmId, @PathVariable int quantity) {
-        return filmService.getReviews(filmId, quantity);
-    }
+//    @GetMapping("/reviews?filmId={filmId}&count={count}")
+//    public List<Review> getReviews(@PathVariable int filmId, @PathVariable int count) {
+//    }
 
     @GetMapping("/reviews")
-    public List<Review> getAllReviews() {
-        return filmService.getReviews(0, 0);
+    public List<Review> getAllReviews(
+            @RequestParam(defaultValue = "0") int filmId,
+            @RequestParam(defaultValue = "0") int count) {
+//       int filmId =0;
+//       int count=0;
+//        if (paramFilmId != null) {
+//            filmId=Integer.parseInt(paramFilmId);
+//        }
+//        if (paramCount!=null){
+//            count=Integer.parseInt(paramCount);
+//        }
+        return filmService.getReviews(filmId, count);
     }
 
     @PutMapping("/reviews/{id}/like/{userId}")

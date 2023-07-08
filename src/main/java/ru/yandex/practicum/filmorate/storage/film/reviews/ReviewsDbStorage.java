@@ -8,12 +8,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
+import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectReviewException;
+import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Repository
 @Data
@@ -24,20 +26,19 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Добавление нового отзыва
     @Override
     public Review addReview(Review review) {
-        if (review.getFilmId()<0){
-            log.error("Film with id " + review.getFilmId() + " not found");
-            throw new IncorrectIdException("Film with id " + review.getFilmId() + " not found");
+        if (review.getFilmId() == 0 || review.getUserId() == 0) {
+            log.error("Incorrect film id or user id");
+            throw new IncorrectReviewException("Incorrect film id or user id");
         }
-        if (review.getUserId()<0){
-            log.error("User with id " + review.getUserId() + " not found");
-            throw new IncorrectIdException("User with id " + review.getUserId() + " not found");
+        if (review.getFilmId() < 0 || review.getUserId() < 0) {
+            log.error("Incorrect film id or user id");
+            throw new IncorrectIdException("Incorrect film id or user id");
         }
-
         String sqlQuery = "INSERT INTO PUBLIC.REVIEWS (content, IS_POSITIVE,user_Id,film_Id) values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
-                    PreparedStatement stmt = connection.prepareStatement(sqlQuery,new String[]{"REVIEW_ID"});
+                    PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"REVIEW_ID"});
                     stmt.setString(1, review.getContent());
                     stmt.setBoolean(2, review.isPositive());
                     stmt.setInt(3, review.getUserId());
@@ -45,9 +46,9 @@ public class ReviewsDbStorage implements ReviewsStorage {
                     return stmt;
                 },
                 keyHolder);
-        int id= Objects.requireNonNull(keyHolder.getKey()).intValue();
-        review.setReviewId(id);
-        return review;
+        int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
+
+        return getReviewById(id);
     }
 
     //Редактирование уже имеющегося отзыва
@@ -55,33 +56,33 @@ public class ReviewsDbStorage implements ReviewsStorage {
     public Review updateReview(Review review) {
         String sqlQuery = "UPDATE PUBLIC.REVIEWS SET " +
                 "content = ?, " +
-                "IS_POSITIVE = ?, " +
-                "user_ID = ?, " +
-                "film_ID = ?" +
+                "IS_POSITIVE = ?" +
                 " WHERE REVIEW_ID = ?";
         jdbcTemplate.update(
                 sqlQuery,
                 review.getContent(),
                 review.isPositive(),
-                review.getUserId(),
-                review.getFilmId(),
-               review.getReviewId()
+                //review.getUserId(),
+                // review.getFilmId(),
+                review.getReviewId()
         );
-        return review;
+        // int useful = getUseFull(review.getReviewId());
+        ///review.setUseful(useful);
+        return getReviewById(review.getReviewId());
     }
 
     //Получение отзыва по идентификатору
     @Override
     public Review getReviewById(int id) {
-        SqlRowSet reviewRows = jdbcTemplate.queryForRowSet("select * from PUBLIC.REVIEWS where REVIEW_ID = ?", id);
-        if (reviewRows.next()) {
-            Review review = new Review(
-                    reviewRows.getInt("REVIEW_ID"),
-                    reviewRows.getString("content"),
-                    reviewRows.getBoolean("IS_POSITIVE"),
-                    reviewRows.getInt("user_ID"),
-                    reviewRows.getInt("film_ID")
-            );
+        SqlRowSet resultSet = jdbcTemplate.queryForRowSet("select * from PUBLIC.REVIEWS where REVIEW_ID = ?", id);
+        if (resultSet.next()) {
+           Review review= Review.builder()
+                    .content(Objects.requireNonNull(resultSet.getString("content")))
+                    .isPositive(resultSet.getBoolean("IS_POSITIVE"))
+                    .filmId(resultSet.getInt("film_ID"))
+                    .userId(resultSet.getInt("user_ID"))
+                    .reviewId(resultSet.getInt("REVIEW_ID"))
+                    .build();
             int useFul = getUseFull(id);
             review.setUseful(useFul);
             return review;
@@ -94,9 +95,9 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Удаление уже имеющегося отзыва
     @Override
     public void deleteReviewById(int id) {
-        Review review = getReviewById(id);
+        //Review review = getReviewById(id);
         String sqlQuery = "delete from PUBLIC.REVIEWS where REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, review.getReviewId());
+        jdbcTemplate.update(sqlQuery, id);
     }
 
 
@@ -107,23 +108,21 @@ public class ReviewsDbStorage implements ReviewsStorage {
         String query;
         if (filmId != 0) {
             query = "SELECT * FROM public.reviews WHERE film_id = " + filmId;
+            if (quantity != 0) {
+                query += " LIMIT " + quantity;
+            }
+            else {
+                query += " LIMIT 10";
+            }
         } else {
             query = "SELECT * FROM public.reviews";
         }
 
-        if (quantity != 0) {
-            query += " LIMIT " + quantity;
-        }
         SqlRowSet resultSet = jdbcTemplate.queryForRowSet(query);//statement.executeQuery(query);
         while (resultSet.next()) {
-//            int reviewId = resultSet.getInt("review_id");
-//            String content = resultSet.getString("content");
-//            boolean isPositive = resultSet.getBoolean("is_positive");
-//            int userId = resultSet.getInt("user_id");
-//            Review review = new Review(reviewId, content, isPositive, userId, filmId);
-            Review review = getReviewById(resultSet.getInt("review_id"));
-            reviews.add(review);
+            reviews.add(getReviewById(resultSet.getInt("REVIEW_ID")));
         }
+        reviews.sort((r1, r2) -> r2.getUseful() - r1.getUseful());
         return reviews;
     }
 
