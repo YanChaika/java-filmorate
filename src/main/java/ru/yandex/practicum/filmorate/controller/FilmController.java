@@ -74,14 +74,29 @@ public class FilmController {
 
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
-            @RequestParam(required = false) String count) {
+            @RequestParam(required = false) String count,
+            @RequestParam(required = false) String genreId,
+            @RequestParam(required = false) String year
+    ) {
+        int genreIdByRequest = 0;
+        if (genreId != null) {
+            genreIdByRequest = Integer.parseInt(genreId);
+        }
+        int yearByRequest = 0;
+        if (year != null) {
+            yearByRequest = Integer.parseInt(year);
+        }
+        return filmService.getSortedFilmsByGenreAndYear(getCount(count), genreIdByRequest, yearByRequest);
+    }
+
+    private Integer getCount(String count) {
         int countFilmsByLikes;
         if (count == null) {
             countFilmsByLikes = 10;
         } else {
             countFilmsByLikes = Integer.parseInt(count);
         }
-        return filmService.getCountFilmsByLike(countFilmsByLikes);
+        return countFilmsByLikes;
     }
 
     @GetMapping("/films/common")

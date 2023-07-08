@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmByGenres;
-import ru.yandex.practicum.filmorate.model.FilmMPA;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
-import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -57,7 +54,7 @@ public class FilmService {
         if (!filmsSorted.isEmpty()) {
             int minCountOrSizeOfSortedFilms;
             if (filmsSorted.size() < count) {
-                minCountOrSizeOfSortedFilms = filmsSorted.size();
+                 minCountOrSizeOfSortedFilms = filmsSorted.size();
             } else {
                 minCountOrSizeOfSortedFilms = count;
             }
@@ -153,6 +150,48 @@ public class FilmService {
     public Optional<FilmMPA> getMpaById(int id) {
         return Optional.of(mpaStorage.getMpaById(id));
     }
+
+    public List<Film> getSortedFilmsByGenreAndYear(int count, int genreId, int year) {
+        List<Film> filmsSorted = getCountFilmsByLike(count);
+        Set<Film> sortedFilmsByGenre = new HashSet<>();
+        Set<Film> sortedFilmsByYear = new HashSet<>();
+        Set<Film> sortedFilms = new HashSet<>();
+        boolean filmByGenresNotFound = false;
+        boolean filmByYearNotFound = false;
+        if (genreId != 0) {
+            for (Film film : filmsSorted) {
+                List<Genre> genres = film.getGenres();
+                for (Genre genre : genres) {
+                    if (genre.getId() == genreId) {
+                        sortedFilmsByGenre.add(film);
+                    }
+                }
+            }
+            if (sortedFilmsByGenre.isEmpty()) {
+                filmByGenresNotFound = true;
+            }
+        }
+        if (year != 0) {
+            for (Film film : filmsSorted) {
+                if (film.getReleaseDate().getYear() == year) {
+                    sortedFilmsByYear.add(film);
+                }
+            }
+            if (sortedFilmsByYear.isEmpty()) {
+                filmByYearNotFound = true;
+            }
+        }
+        if ((filmByGenresNotFound) && (filmByYearNotFound)) {
+            return new ArrayList<>();
+        }
+        if ((genreId != 0) || (year != 0)) {
+            sortedFilms.addAll(sortedFilmsByGenre);
+            sortedFilms.addAll(sortedFilmsByYear);
+            return new ArrayList<>(sortedFilms);
+        }
+        return filmsSorted;
+    }
+}
 
     public List<Film> getByDirectorId(Integer directorId, String sortBy) {
         if ("year".equals(sortBy)) {
