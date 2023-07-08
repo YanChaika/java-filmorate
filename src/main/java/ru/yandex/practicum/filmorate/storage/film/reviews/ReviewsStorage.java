@@ -18,5 +18,6 @@ public interface ReviewsStorage {
     void addDisLikeReview(int reviewId, int userId);
 
     void deleteLikeReview(int reviewId, int userId);
+
     List<Review> getReviews(int filmId, int quantity);
 }
