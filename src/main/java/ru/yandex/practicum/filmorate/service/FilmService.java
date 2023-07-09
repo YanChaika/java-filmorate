@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.reviews.LikeReviewStorage;
 import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
 
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ public class FilmService {
     private final GenresStorage genresStorage;
     private final MpaStorage mpaStorage;
     private final ReviewsStorage reviewsStorage; // функционал по отзывам - тз 12 групповой проект
+    private final LikeReviewStorage likeReviewStorage;
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
     public void addLike(Integer id, Integer userId) {
@@ -169,5 +171,21 @@ public class FilmService {
 
     public List<Review> getReviews(int filmId, int quantity) {
         return reviewsStorage.getReviews(filmId, quantity);
+    }
+
+    public void addLikeReview(int id, int userId) {
+        likeReviewStorage.addLikeReview(id, userId);
+    }
+
+    public void addDisLikeReview(int id, int userId) {
+        likeReviewStorage.addDisLikeReview(id, userId);
+    }
+
+    public void deleteLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
+    }
+
+    public void deleteDisLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
     }
 }

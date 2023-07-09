@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
 
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
     private final FilmService filmService;
-    private final ReviewsStorage reviewsStorage;
 
     // тз 12 групповой проект
     @PostMapping("/reviews")
@@ -46,21 +44,21 @@ public class ReviewController {
 
     @PutMapping("/reviews/{id}/like/{userId}")
     public void addLikeReview(@PathVariable int id, @PathVariable int userId) {
-        reviewsStorage.addLikeReview(id, userId);
+        filmService.addLikeReview(id, userId);
     }
 
     @PutMapping("/reviews/{id}/dislike/{userId}")
-    void addDisLikeReview(@PathVariable int id, @PathVariable int userId) {
-        reviewsStorage.addDisLikeReview(id, userId);
+    public void addDisLikeReview(@PathVariable int id, @PathVariable int userId) {
+        filmService.addDisLikeReview(id, userId);
     }
 
     @DeleteMapping("/reviews/{id}/like/{userId}")
-    void deleteLikeReview(@PathVariable int id, @PathVariable int userId) {
-        reviewsStorage.deleteLikeReview(id, userId);
+    public void deleteLikeReview(@PathVariable int id, @PathVariable int userId) {
+        filmService.deleteLikeReview(id, userId);
     }
 
     @DeleteMapping("/reviews/{id}/dislike/{userId}")
-    void deleteDisLikeReview(@PathVariable int id, @PathVariable int userId) {
-        reviewsStorage.deleteLikeReview(id, userId);
+    public void deleteDisLikeReview(@PathVariable int id, @PathVariable int userId) {
+        filmService.deleteLikeReview(id, userId);
     }
 }

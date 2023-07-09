@@ -90,7 +90,6 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Удаление уже имеющегося отзыва
     @Override
     public void deleteReviewById(int id) {
-        //Review review = getReviewById(id);
         String sqlQuery = "delete from PUBLIC.REVIEWS where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, id);
     }
@@ -117,45 +116,6 @@ public class ReviewsDbStorage implements ReviewsStorage {
         }
         reviews.sort((r1, r2) -> r2.getUseful() - r1.getUseful());
         return reviews;
-    }
-
-    //пользователь ставит лайк отзыву
-    @Override
-    public void addLikeReview(int reviewId, int userId) {
-        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-                    stmt.setInt(1, userId);
-                    stmt.setInt(2, reviewId);
-                    stmt.setBoolean(3, true);
-                    return stmt;
-                },
-                keyHolder);
-    }
-
-    //пользователь ставит дизлайк отзыву
-    @Override
-    public void addDisLikeReview(int reviewId, int userId) {
-        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-                    stmt.setInt(1, userId);
-                    stmt.setInt(2, reviewId);
-                    stmt.setBoolean(3, false);
-                    return stmt;
-                },
-                keyHolder);
-    }
-
-    // пользователь удаляет лайк/дизлайк отзыву
-    @Override
-    public void deleteLikeReview(int reviewId, int userId) {
-        String sqlQuery = "delete from PUBLIC.LIKEREVIEW  where REVIEW_ID = ? AND USER_ID = ?";
-        jdbcTemplate.update(sqlQuery, reviewId, userId);
     }
 
     //получение рейтинга полезности отзыва по его id
