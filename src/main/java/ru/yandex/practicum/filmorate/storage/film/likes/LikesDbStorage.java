@@ -68,4 +68,33 @@ public class LikesDbStorage implements LikesStorage {
         }
         return filmsId;
     }
+
+    @Override
+    public List<Integer> getFilmIdByUserId(int id) {
+        List<Integer> filmsIdByUser = new ArrayList<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT film_id " +
+                "FROM PUBLIC.FILM_LIKES " +
+                "WHERE user_id = ?", id);
+        while (userRows.next()) {
+            filmsIdByUser.add(userRows.getInt("film_id"));
+        }
+        return filmsIdByUser;
+    }
+
+    @Override
+    public Set<Integer> getCommonFilmsId(Integer userId, Integer friendId) {
+        Set<Integer> commonFilmsId = new HashSet<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT DISTINCT C.film_id, COUNT(C.user_id) " +
+                "FROM PUBLIC.FILM_LIKES AS C " +
+                "INNER JOIN (SELECT film_id " +
+                "FROM PUBLIC.FILM_LIKES WHERE user_id = ?) AS U ON C.film_id = U.film_id " +
+                "INNER JOIN (SELECT film_id " +
+                "FROM PUBLIC.FILM_LIKES WHERE user_id = ?) AS F ON U.film_id = F.film_id " +
+                "GROUP BY C.film_id " +
+                "ORDER BY COUNT(C.user_id) DESC;", userId, friendId);
+        while (userRows.next()) {
+            commonFilmsId.add(userRows.getInt("film_id"));
+        }
+        return commonFilmsId;
+    }
 }

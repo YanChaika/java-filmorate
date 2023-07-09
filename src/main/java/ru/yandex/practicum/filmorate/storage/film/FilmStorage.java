@@ -17,4 +17,6 @@ public interface FilmStorage {
     Film getFilmById(Integer id);
 
     List<Film> getSortedFilms();
+
+    List<Film> getTwoUsersCommonFilms(Integer userId, Integer friendId);
 }

@@ -180,6 +180,18 @@ public class FilmDbStorage implements FilmStorage {
         return countBySortedFilms;
     }
 
+    @Override
+    public List<Film> getTwoUsersCommonFilms(Integer userId, Integer friendId) {
+        Set<Integer> commonFilmsId = likesDbStorage.getCommonFilmsId(userId, friendId);
+        List<Film> commonFilms = new ArrayList<>();
+        if (!commonFilmsId.isEmpty()) {
+            for (Integer integer : commonFilmsId) {
+                commonFilms.add(getFilmById(integer));
+            }
+        }
+        return commonFilms;
+    }
+
     private static Film cons(ResultSet rs, int rowNum) throws SQLException {
         FilmMPA filmMPA = new FilmMPA(rs.getInt("rating_id"), null);
         return new Film(
