@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmByGenres;
+import ru.yandex.practicum.filmorate.model.FilmMPA;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -54,7 +57,7 @@ public class FilmService {
         if (!filmsSorted.isEmpty()) {
             int minCountOrSizeOfSortedFilms;
             if (filmsSorted.size() < count) {
-                 minCountOrSizeOfSortedFilms = filmsSorted.size();
+                minCountOrSizeOfSortedFilms = filmsSorted.size();
             } else {
                 minCountOrSizeOfSortedFilms = count;
             }
@@ -68,6 +71,10 @@ public class FilmService {
             countOfSortedFilm = filmStorage.getAll().stream().limit(count).collect(Collectors.toList());
         }
         return countOfSortedFilm;
+    }
+
+    public List<Film> getTwoUsersCommonFilms(Integer userId, Integer friendId) {
+        return filmStorage.getTwoUsersCommonFilms(userId, friendId);
     }
 
     public List<Film> getAll() {
