@@ -9,5 +9,4 @@ public class FilmMPA {
 
     private int id;
     private String name;
-
 }
