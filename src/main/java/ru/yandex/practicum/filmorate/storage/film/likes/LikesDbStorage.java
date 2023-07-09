@@ -82,6 +82,18 @@ public class LikesDbStorage implements LikesStorage {
         return filmsIdByUser;
     }
 
+    @Override
+    public List<Integer> getFilmIdByUserId(int id) {
+        List<Integer> filmsIdByUser = new ArrayList<>();
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT film_id " +
+                "FROM PUBLIC.FILM_LIKES " +
+                "WHERE user_id = ?", id);
+        while (userRows.next()) {
+            filmsIdByUser.add(userRows.getInt("film_id"));
+        }
+        return filmsIdByUser;
+    }
+
 
     @Override
     public List<Integer> getSortedFilmsByIds(Set<Integer> filmIds) {
