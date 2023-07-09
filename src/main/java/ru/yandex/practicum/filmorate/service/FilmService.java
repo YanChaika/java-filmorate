@@ -29,7 +29,7 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final GenresStorage genresStorage;
     private final MpaStorage mpaStorage;
-    private final ReviewsStorage reviewsStorage; // функционал по отзывам - тз 12 групповой проект
+    private final ReviewsStorage reviewsStorage; // -функционал по отзывам - тз 12 групповой проект
     private final LikeReviewStorage likeReviewStorage;
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
