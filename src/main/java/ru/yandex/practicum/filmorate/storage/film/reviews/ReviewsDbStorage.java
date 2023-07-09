@@ -109,7 +109,6 @@ public class ReviewsDbStorage implements ReviewsStorage {
         } else {
             query = "SELECT * FROM public.reviews";
         }
-
         SqlRowSet resultSet = jdbcTemplate.queryForRowSet(query);//statement.executeQuery(query);
         while (resultSet.next()) {
             reviews.add(getReviewById(resultSet.getInt("REVIEW_ID")));
