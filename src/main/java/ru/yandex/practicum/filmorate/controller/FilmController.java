@@ -94,7 +94,7 @@ public class FilmController {
         if (count == null) {
             countFilmsByLikes = 10;
         } else {
-            countFilmsByLikes = Integer.parseInt(count);
+        countFilmsByLikes = Integer.parseInt(count);
         }
         return countFilmsByLikes;
     }
