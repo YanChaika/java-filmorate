@@ -26,6 +26,5 @@ public class User {
     public User asCreated(int id) {
         return new User(id, email, login, name, birthday);
     }
-
 }
 

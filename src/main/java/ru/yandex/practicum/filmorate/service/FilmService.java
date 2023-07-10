@@ -153,4 +153,11 @@ public class FilmService {
     public Optional<FilmMPA> getMpaById(int id) {
         return Optional.of(mpaStorage.getMpaById(id));
     }
+
+    public List<Film> getByDirectorId(Integer directorId, String sortBy) {
+        if ("year".equals(sortBy)) {
+            return filmStorage.getFilmsByDirectorSortedByYear(directorId);
+        }
+        return filmStorage.getFilmsByDirectorSortLikes(directorId);
+    }
 }
