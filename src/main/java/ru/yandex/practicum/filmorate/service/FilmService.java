@@ -184,14 +184,19 @@ public class FilmService {
         if ((filmByGenresNotFound) && (filmByYearNotFound)) {
             return new ArrayList<>();
         }
+        if ((genreId != 0) && (year != 0)) {
+            if ((filmByGenresNotFound) || (filmByYearNotFound)) {
+                return new ArrayList<>();
+            }
+        }
         if ((genreId != 0) || (year != 0)) {
             sortedFilms.addAll(sortedFilmsByGenre);
             sortedFilms.addAll(sortedFilmsByYear);
             return new ArrayList<>(sortedFilms);
         }
+
         return filmsSorted;
     }
-}
 
     public List<Film> getByDirectorId(Integer directorId, String sortBy) {
         if ("year".equals(sortBy)) {
