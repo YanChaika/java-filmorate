@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmByGenres;
-import ru.yandex.practicum.filmorate.model.FilmMPA;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
@@ -197,7 +194,6 @@ public class FilmService {
     public void deleteDisLikeReview(int id, int userId) {
         likeReviewStorage.deleteLikeReview(id, userId);
     }
-}
 
     public List<Film> getByDirectorId(Integer directorId, String sortBy) {
         if ("year".equals(sortBy)) {
