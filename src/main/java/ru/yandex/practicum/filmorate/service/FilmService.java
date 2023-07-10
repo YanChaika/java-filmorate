@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmByGenres;
-import ru.yandex.practicum.filmorate.model.FilmMPA;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+
+import ru.yandex.practicum.filmorate.storage.film.reviews.LikeReviewStorage;
+import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
+
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -28,6 +29,8 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final GenresStorage genresStorage;
     private final MpaStorage mpaStorage;
+    private final ReviewsStorage reviewsStorage; // -функционал по отзывам - тз 12 групповой проект
+    private final LikeReviewStorage likeReviewStorage;
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
     public void addLike(Integer id, Integer userId) {
@@ -152,6 +155,44 @@ public class FilmService {
 
     public Optional<FilmMPA> getMpaById(int id) {
         return Optional.of(mpaStorage.getMpaById(id));
+    }
+
+
+    //ТЗ 12 групповой проект
+    public Review addReview(Review review) {
+        return reviewsStorage.addReview(review);
+    }
+
+    public Review updateReview(Review review) {
+        return reviewsStorage.updateReview(review);
+    }
+
+    public Review getReviewById(int id) {
+        return reviewsStorage.getReviewById(id);
+    }
+
+    public void deleteReviewById(int id) {
+        reviewsStorage.deleteReviewById(id);
+    }
+
+    public List<Review> getReviews(int filmId, int quantity) {
+        return reviewsStorage.getReviews(filmId, quantity);
+    }
+
+    public void addLikeReview(int id, int userId) {
+        likeReviewStorage.addLikeReview(id, userId);
+    }
+
+    public void addDisLikeReview(int id, int userId) {
+        likeReviewStorage.addDisLikeReview(id, userId);
+    }
+
+    public void deleteLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
+    }
+
+    public void deleteDisLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
     }
 
     public List<Film> getByDirectorId(Integer directorId, String sortBy) {

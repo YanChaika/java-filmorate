@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Autowired
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
 
@@ -26,7 +28,8 @@ public class UserService {
 
     public void removeFromFriends(Integer id, Integer friendId) {
         try {
-            Optional<User> userToUpdate = userStorage.getById(id);;
+            Optional<User> userToUpdate = userStorage.getById(id);
+            ;
             friendStorage.remove(getById(id), getById(friendId));
         } catch (NullPointerException e) {
             throw new IncorrectIdException("Film для удаления не найден");
