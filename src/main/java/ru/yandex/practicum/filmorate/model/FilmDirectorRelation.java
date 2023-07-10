@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FilmMPA {
+public class FilmDirectorRelation {
 
-    private int id;
-    private String name;
+    private final int filmId;
+    private final int directorId;
 }
