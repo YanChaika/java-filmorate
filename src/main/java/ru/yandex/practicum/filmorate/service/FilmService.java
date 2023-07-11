@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 
 import ru.yandex.practicum.filmorate.storage.film.reviews.LikeReviewStorage;
 import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
+import ru.yandex.practicum.filmorate.storage.user.feeds.FeedStorage;
 
 
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,7 @@ public class FilmService {
     private final MpaStorage mpaStorage;
     private final ReviewsStorage reviewsStorage; // -функционал по отзывам - тз 12 групповой проект
     private final LikeReviewStorage likeReviewStorage;
+    private final FeedStorage feedStorage;
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
     public void addLike(Integer id, Integer userId) {
@@ -39,12 +41,14 @@ public class FilmService {
             throw new IncorrectIdException("Film для добавления лайка не найден");
         }
         likesStorage.create(id, userId);
+        feedStorage.addEvent(new Event(userId, id, Event.EventType.LIKE, Event.Operation.ADD));
     }
 
     public void removeLike(Integer id, Integer userId) {
         try {
             Film filmToUpdate = filmStorage.getFilmById(id);
             likesStorage.remove(id, userId);
+            feedStorage.addEvent((new Event(userId, id, Event.EventType.LIKE, Event.Operation.REMOVE)));
         } catch (NullPointerException e) {
             throw new IncorrectIdException("Film для удаления не найден");
         }
@@ -68,9 +72,6 @@ public class FilmService {
                 countOfSortedFilm.add(filmsSorted.get(i));
             }
         } else {
-            // countOfSortedFilm = filmStorage.getAll(); // если таблица likes пустая, то filmStorage.getSortedFilms()
-            // возвращает пустой List, и метод в итоге возвращает список вообще всех фильмов.
-            // предлагаю сделать хотя бы так:
             countOfSortedFilm = filmStorage.getAll().stream().limit(count).collect(Collectors.toList());
         }
         return countOfSortedFilm;
@@ -206,11 +207,15 @@ public class FilmService {
 
     //ТЗ 12 групповой проект
     public Review addReview(Review review) {
-        return reviewsStorage.addReview(review);
+        review = reviewsStorage.addReview(review);
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.ADD));
+        return review;
     }
 
     public Review updateReview(Review review) {
-        return reviewsStorage.updateReview(review);
+        review = reviewsStorage.updateReview(review);
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.UPDATE));
+        return review;
     }
 
     public Review getReviewById(int id) {
@@ -218,6 +223,8 @@ public class FilmService {
     }
 
     public void deleteReviewById(int id) {
+        Review review = reviewsStorage.getReviewById(id);
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.REMOVE));
         reviewsStorage.deleteReviewById(id);
     }
 
