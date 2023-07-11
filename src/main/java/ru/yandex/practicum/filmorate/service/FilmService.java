@@ -11,6 +11,10 @@ import ru.yandex.practicum.filmorate.storage.film.genres.GenresStorage;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesStorage;
 
+import ru.yandex.practicum.filmorate.storage.film.reviews.LikeReviewStorage;
+import ru.yandex.practicum.filmorate.storage.film.reviews.ReviewsStorage;
+
+
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
@@ -25,6 +29,8 @@ public class FilmService {
     private final GenreStorage genreStorage;
     private final GenresStorage genresStorage;
     private final MpaStorage mpaStorage;
+    private final ReviewsStorage reviewsStorage; // -функционал по отзывам - тз 12 групповой проект
+    private final LikeReviewStorage likeReviewStorage;
     private static final LocalDate earliestReleaseDate = LocalDate.of(1895, 12, 28);
 
     public void addLike(Integer id, Integer userId) {
@@ -198,10 +204,66 @@ public class FilmService {
         return filmsSorted;
     }
 
+    //ТЗ 12 групповой проект
+    public Review addReview(Review review) {
+        return reviewsStorage.addReview(review);
+    }
+
+    public Review updateReview(Review review) {
+        return reviewsStorage.updateReview(review);
+    }
+
+    public Review getReviewById(int id) {
+        return reviewsStorage.getReviewById(id);
+    }
+
+    public void deleteReviewById(int id) {
+        reviewsStorage.deleteReviewById(id);
+    }
+
+    public List<Review> getReviews(int filmId, int quantity) {
+        return reviewsStorage.getReviews(filmId, quantity);
+    }
+
+    public void addLikeReview(int id, int userId) {
+        likeReviewStorage.addLikeReview(id, userId);
+    }
+
+    public void addDisLikeReview(int id, int userId) {
+        likeReviewStorage.addDisLikeReview(id, userId);
+    }
+
+    public void deleteLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
+    }
+
+    public void deleteDisLikeReview(int id, int userId) {
+        likeReviewStorage.deleteLikeReview(id, userId);
+    }
+
     public List<Film> getByDirectorId(Integer directorId, String sortBy) {
         if ("year".equals(sortBy)) {
             return filmStorage.getFilmsByDirectorSortedByYear(directorId);
         }
         return filmStorage.getFilmsByDirectorSortLikes(directorId);
+    }
+
+    public List<Film> searchFilms(String searchQuery, String by) {
+        List<Film> filmsFoundByDirector = new ArrayList<>();
+        List<Film> filmsFoundByTitle = new ArrayList<>();
+
+        if (by.contains("director") && by.contains("title")) {
+            filmsFoundByDirector = filmStorage.filmsSearchInDirector(searchQuery.toLowerCase());
+            filmsFoundByTitle = filmStorage.filmsSearchInTitle(searchQuery.toLowerCase());
+        } else if (by.contains("director")) {
+            filmsFoundByDirector = filmStorage.filmsSearchInDirector(searchQuery.toLowerCase());
+        } else if (by.contains("title")) {
+            filmsFoundByTitle = filmStorage.filmsSearchInTitle(searchQuery.toLowerCase());
+        } else {
+            throw new RuntimeException("Неверные данные для запроса поиска");
+        }
+        filmsFoundByTitle.removeAll(filmsFoundByDirector);
+        filmsFoundByDirector.addAll(filmsFoundByTitle);
+        return filmsFoundByDirector;
     }
 }
