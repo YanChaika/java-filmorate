@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RecommendationsService {
 
@@ -18,8 +20,8 @@ public class RecommendationsService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
 
-    private static Map<User, List<Film>> diffs = new HashMap<>();
-    private static Map<User, List<Film>> userToCompare = new HashMap<>();
+    private final Map<User, List<Film>> diffs = new HashMap<>();
+    private final Map<User, List<Film>> userToCompare = new HashMap<>();
 
     public void getInputData(int id) {
         List<User> users = userStorage.getAll();
@@ -42,21 +44,12 @@ public class RecommendationsService {
         int userIdWithCommonLikes = getUserIdWithCommonLikes(id);
         List<Integer> filmsId = likesStorage.getFilmIdByUserId(userIdWithCommonLikes);
         List<Integer> filmsUserId = likesStorage.getFilmIdByUserId(id);
-        Set<Integer> filmsIdToRecommendation = new HashSet<>();
-        for (int i = 0; i < filmsId.size(); i++) {
-            for (int i1 = 0; i1 < filmsUserId.size(); i1++) {
-                if (filmsId.get(i) == (filmsUserId.get(i1))) {
-                    filmsIdToRecommendation.remove(filmsId.get(i));
-                    break;
-                } else {
-                    filmsIdToRecommendation.add(filmsId.get(i));
-                }
-            }
-        }
+        filmsId.removeAll(filmsUserId);
         List<Film> filmsToRecommendation = new ArrayList<>();
-        for (Integer integer : filmsIdToRecommendation) {
+        for (Integer integer : filmsId) {
             filmsToRecommendation.add(filmStorage.getFilmById(integer));
         }
+        log.info("Рекомендации по " + id);
         return filmsToRecommendation;
     }
 
@@ -67,10 +60,10 @@ public class RecommendationsService {
             if (user.getId() != id) {
                 int count = 0;
                 List<Film> filmsByUser = diffs.get(user);
-                for (int i = 0; i < filmsByUser.size(); i++) {
+                for (Film film : filmsByUser) {
                     List<Film> toCompare = userToCompare.get(userStorage.getById(id).get());
-                    for (int i1 = 0; i1 < toCompare.size(); i1++) {
-                        if (filmsByUser.get(i).equals(toCompare.get(i1))) {
+                    for (Film value : toCompare) {
+                        if (film.equals(value)) {
                             count += 1;
                         }
                     }
@@ -81,6 +74,7 @@ public class RecommendationsService {
                 }
              }
         }
+        log.info("User с максимальным количеством пересечения по лайкам " + userId);
         return userId;
     }
 }

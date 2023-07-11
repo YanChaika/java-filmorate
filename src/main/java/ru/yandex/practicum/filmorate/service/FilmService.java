@@ -160,9 +160,9 @@ public class FilmService {
 
     public List<Film> getSortedFilmsByGenreAndYear(int count, int genreId, int year) {
         List<Film> filmsSorted = getCountFilmsByLike(count);
-        Set<Film> sortedFilmsByGenre = new HashSet<>();
-        Set<Film> sortedFilmsByYear = new HashSet<>();
-        Set<Film> sortedFilms = new HashSet<>();
+        List<Film> sortedFilmsByGenre = new ArrayList<>();
+        List<Film> sortedFilmsByYear = new ArrayList<>();
+        List<Film> sortedFilms = new ArrayList<>();
         boolean filmByGenresNotFound = false;
         boolean filmByYearNotFound = false;
         if (genreId != 0) {
@@ -197,15 +197,14 @@ public class FilmService {
             }
         }
         if ((genreId != 0) || (year != 0)) {
-            sortedFilms.addAll(sortedFilmsByGenre);
+            sortedFilmsByGenre.removeAll(sortedFilmsByYear);
             sortedFilms.addAll(sortedFilmsByYear);
-            return new ArrayList<>(sortedFilms);
+            sortedFilms.addAll(sortedFilmsByGenre);
+            return sortedFilms;
         }
-
         return filmsSorted;
     }
 
-    //ТЗ 12 групповой проект
     public Review addReview(Review review) {
         review = reviewsStorage.addReview(review);
         feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.ADD));

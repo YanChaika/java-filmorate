@@ -14,7 +14,6 @@ import java.util.List;
 public class ReviewController {
     private final FilmService filmService;
 
-    // тз 12 групповой проект
     @PostMapping("/reviews")
     public Review addReview(@RequestBody Review review) {
         return filmService.addReview(review);
