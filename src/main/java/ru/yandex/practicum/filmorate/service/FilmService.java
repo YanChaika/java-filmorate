@@ -201,4 +201,23 @@ public class FilmService {
         }
         return filmStorage.getFilmsByDirectorSortLikes(directorId);
     }
+
+    public List<Film> searchFilms(String searchQuery, String by) {
+        List<Film> filmsFoundByDirector = new ArrayList<>();
+        List<Film> filmsFoundByTitle = new ArrayList<>();
+
+        if (by.contains("director") && by.contains("title")) {
+            filmsFoundByDirector = filmStorage.filmsSearchInDirector(searchQuery.toLowerCase());
+            filmsFoundByTitle = filmStorage.filmsSearchInTitle(searchQuery.toLowerCase());
+        } else if (by.contains("director")) {
+            filmsFoundByDirector = filmStorage.filmsSearchInDirector(searchQuery.toLowerCase());
+        } else if (by.contains("title")) {
+            filmsFoundByTitle = filmStorage.filmsSearchInTitle(searchQuery.toLowerCase());
+        } else {
+            throw new RuntimeException("Неверные данные для запроса поиска");
+        }
+        filmsFoundByTitle.removeAll(filmsFoundByDirector);
+        filmsFoundByDirector.addAll(filmsFoundByTitle);
+        return filmsFoundByDirector;
+    }
 }

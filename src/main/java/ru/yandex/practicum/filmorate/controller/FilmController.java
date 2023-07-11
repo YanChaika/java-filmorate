@@ -99,4 +99,17 @@ public class FilmController {
             throw new IncorrectIdException("id меньше 1");
         }
     }
+
+    @GetMapping("/films/search")
+    public List<Film> searchFilms(
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "director,title", required = false) String by) {
+        log.info("Поиск фильма по " + by + ", запрос: " + query);
+        if (query == null) {
+            String message = "Пустой запрос поиска фильмов.";
+            log.info(message);
+            throw new RuntimeException(message);
+        }
+        return filmService.searchFilms(query, by);
+    }
 }

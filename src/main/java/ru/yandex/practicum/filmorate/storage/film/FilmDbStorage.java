@@ -11,10 +11,6 @@ import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.film.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.director.FilmsDirectorsRelationStorage;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmByGenres;
-import ru.yandex.practicum.filmorate.model.FilmMPA;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.film.genres.GenresDbStorage;
 import ru.yandex.practicum.filmorate.storage.film.likes.LikesDbStorage;
@@ -26,10 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @Component
 @Primary
@@ -241,6 +233,23 @@ public class FilmDbStorage implements FilmStorage {
         Set<Integer> filmIdsByDirector = getFilmIdsByDirector(directorId);
         List<Integer> sortedFilmIdsByLikes = likesDbStorage.getSortedFilmsByIds(filmIdsByDirector);
         return getFilmsByIds(sortedFilmIdsByLikes);
+    }
+
+    @Override
+    public List<Film> filmsSearchInDirector(String searchQuery) {
+        final String sqlQuery = "SELECT DISTINCT fd.FILM_ID FROM PUBLIC.films_director AS fd " +
+                "LEFT OUTER JOIN PUBLIC.directors AS d ON fd.DIRECTOR_ID = d.DIRECTOR_ID " +
+                "WHERE LOWER(d.DIRECTOR_NAME) LIKE '%" + searchQuery + "%' ORDER BY fd.FILM_ID";
+        final List<Integer> filmsId = jdbcTemplate.queryForList(sqlQuery, Integer.class);
+        return filmsId.stream().map(this::getFilmById).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Film> filmsSearchInTitle(String searchQuery) {
+        final String sqlQuery = "SELECT DISTINCT FILM_ID FROM PUBLIC.films " +
+                "WHERE LOWER(FILM_NAME) LIKE '%" + searchQuery + "%'";
+        final List<Integer> filmsId = jdbcTemplate.queryForList(sqlQuery, Integer.class);
+        return filmsId.stream().map(this::getFilmById).collect(Collectors.toList());
     }
 
     @NotNull
