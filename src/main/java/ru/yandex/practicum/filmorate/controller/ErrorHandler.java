@@ -23,7 +23,7 @@ public class ErrorHandler {
 
     @ExceptionHandler({FilmAlreadyException.class, UserAlreadyPresentException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleAlreadyPresentEsception(final RuntimeException e) {
+    public ErrorResponse handleAlreadyPresentException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 

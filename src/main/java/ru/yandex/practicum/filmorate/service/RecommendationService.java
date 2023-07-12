@@ -14,7 +14,7 @@ import java.util.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RecommendationsService {
+public class RecommendationService {
 
     private final LikesStorage likesStorage;
     private final UserStorage userStorage;
