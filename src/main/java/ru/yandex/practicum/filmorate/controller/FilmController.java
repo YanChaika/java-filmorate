@@ -74,14 +74,29 @@ public class FilmController {
 
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
-            @RequestParam(required = false) String count) {
+            @RequestParam(required = false) Integer count,
+            @RequestParam(required = false) Integer genreId,
+            @RequestParam(required = false) Integer year
+    ) {
+        int genreIdByRequest = 0;
+        if (genreId != null) {
+            genreIdByRequest = genreId;
+        }
+        int yearByRequest = 0;
+        if (year != null) {
+            yearByRequest = year;
+        }
+        return filmService.getSortedFilmsByGenreAndYear(getCount(count), genreIdByRequest, yearByRequest);
+    }
+
+    private Integer getCount(Integer count) {
         int countFilmsByLikes;
-        if (count == null) {
+        if ((count == null) || count == 0) {
             countFilmsByLikes = 10;
         } else {
-            countFilmsByLikes = Integer.parseInt(count);
+        countFilmsByLikes = count;
         }
-        return filmService.getCountFilmsByLike(countFilmsByLikes);
+        return countFilmsByLikes;
     }
 
     @GetMapping("/films/common")
@@ -98,5 +113,18 @@ public class FilmController {
         if (id < 1) {
             throw new IncorrectIdException("id меньше 1");
         }
+    }
+
+    @GetMapping("/films/search")
+    public List<Film> searchFilms(
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "director,title", required = false) String by) {
+        log.info("Поиск фильма по " + by + ", запрос: " + query);
+        if (query == null) {
+            String message = "Пустой запрос поиска фильмов.";
+            log.info(message);
+            throw new RuntimeException(message);
+        }
+        return filmService.searchFilms(query, by);
     }
 }
