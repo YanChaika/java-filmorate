@@ -194,4 +194,11 @@ public class FilmService {
     public void deleteDisLikeReview(int id, int userId) {
         likeReviewStorage.deleteLikeReview(id, userId);
     }
+
+    public List<Film> getByDirectorId(Integer directorId, String sortBy) {
+        if ("year".equals(sortBy)) {
+            return filmStorage.getFilmsByDirectorSortedByYear(directorId);
+        }
+        return filmStorage.getFilmsByDirectorSortLikes(directorId);
+    }
 }
