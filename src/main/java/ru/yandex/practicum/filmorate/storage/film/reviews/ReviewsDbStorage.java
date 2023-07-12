@@ -22,7 +22,7 @@ import java.util.Objects;
 public class ReviewsDbStorage implements ReviewsStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    //Добавление нового отзыва
+    //Добавление нового отзыва ТЗ12
     @Override
     public Review addReview(Review review) {
         if (review.getFilmId() == 0 || review.getUserId() == 0) {
