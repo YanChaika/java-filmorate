@@ -29,7 +29,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIncorrectReviewException(final IncorrectReviewException e) {
+    public ErrorResponse handleIncorrectReviewException(final IncorrecIdReviewException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
