@@ -19,7 +19,7 @@ public class LikeReviewDbStorage implements LikeReviewStorage {
     //пользователь ставит лайк отзыву
     @Override
     public void addLikeReview(int reviewId, int userId) {
-        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
+        String sqlQuery = "INSERT INTO PUBLIC.likes_review(USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
@@ -35,7 +35,7 @@ public class LikeReviewDbStorage implements LikeReviewStorage {
     //пользователь ставит дизлайк отзыву
     @Override
     public void addDisLikeReview(int reviewId, int userId) {
-        String sqlQuery = "INSERT INTO PUBLIC.LIKEREVIEW (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
+        String sqlQuery = "INSERT INTO PUBLIC.likes_review (USER_ID, REVIEW_ID,IS_LIKE) values (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
@@ -51,7 +51,7 @@ public class LikeReviewDbStorage implements LikeReviewStorage {
     // пользователь удаляет лайк/дизлайк отзыву
     @Override
     public void deleteLikeReview(int reviewId, int userId) {
-        String sqlQuery = "delete from PUBLIC.LIKEREVIEW  where REVIEW_ID = ? AND USER_ID = ?";
+        String sqlQuery = "delete from PUBLIC.likes_review  where REVIEW_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(sqlQuery, reviewId, userId);
     }
 }

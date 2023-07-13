@@ -7,8 +7,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdReviewException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
-import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectReviewException;
 import ru.yandex.practicum.filmorate.model.Review;
 
 import java.sql.PreparedStatement;
@@ -22,18 +22,18 @@ import java.util.Objects;
 public class ReviewsDbStorage implements ReviewsStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    //Добавление нового отзыва
+    //Добавление нового отзыва ТЗ12
     @Override
     public Review addReview(Review review) {
         if (review.getFilmId() == 0 || review.getUserId() == 0) {
             log.error("Incorrect film id or user id");
-            throw new IncorrectReviewException("Incorrect film id or user id");
+            throw new IncorrectIdReviewException("Incorrect film id or user id");
         }
         if (review.getFilmId() < 0 || review.getUserId() < 0) {
             log.error("Incorrect film id or user id");
             throw new IncorrectIdException("Incorrect film id or user id");
         }
-        String sqlQuery = "INSERT INTO PUBLIC.REVIEWS (content, IS_POSITIVE,user_Id,film_Id) values (?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO PUBLIC.reviews (content, IS_POSITIVE,user_Id,film_Id) values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
@@ -53,7 +53,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Редактирование уже имеющегося отзыва
     @Override
     public Review updateReview(Review review) {
-        String sqlQuery = "UPDATE PUBLIC.REVIEWS SET " +
+        String sqlQuery = "UPDATE PUBLIC.reviews SET " +
                 "content = ?, " +
                 "IS_POSITIVE = ?" +
                 " WHERE REVIEW_ID = ?";
@@ -69,7 +69,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Получение отзыва по идентификатору
     @Override
     public Review getReviewById(int id) {
-        SqlRowSet resultSet = jdbcTemplate.queryForRowSet("select * from PUBLIC.REVIEWS where REVIEW_ID = ?", id);
+        SqlRowSet resultSet = jdbcTemplate.queryForRowSet("select * from PUBLIC.reviews where REVIEW_ID = ?", id);
         if (resultSet.next()) {
             Review review = Review.builder()
                     .content(Objects.requireNonNull(resultSet.getString("content")))
@@ -90,7 +90,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     //Удаление уже имеющегося отзыва
     @Override
     public void deleteReviewById(int id) {
-        String sqlQuery = "delete from PUBLIC.REVIEWS where REVIEW_ID = ?";
+        String sqlQuery = "delete from PUBLIC.reviews where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, id);
     }
 
@@ -119,13 +119,13 @@ public class ReviewsDbStorage implements ReviewsStorage {
 
     //получение рейтинга полезности отзыва по его id
     public int getUseFull(int reviewId) {
-        SqlRowSet sqlForLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.LIKEREVIEW where REVIEW_ID = ? AND IS_LIKE = true", reviewId);
+        SqlRowSet sqlForLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.likes_review where REVIEW_ID = ? AND IS_LIKE = true", reviewId);
         int like = 0;
         int disLike = 0;
         while (sqlForLikes.next()) {
             like++; // подсчитываем количество лайков
         }
-        SqlRowSet sqlForDisLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.LIKEREVIEW where REVIEW_ID = ? AND IS_LIKE = false", reviewId);
+        SqlRowSet sqlForDisLikes = jdbcTemplate.queryForRowSet("SELECT * from PUBLIC.likes_review where REVIEW_ID = ? AND IS_LIKE = false", reviewId);
         while (sqlForDisLikes.next()) {
             disLike++; // подсчитываем количество дизлайков
         }
