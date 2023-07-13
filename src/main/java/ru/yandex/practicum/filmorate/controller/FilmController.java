@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -74,19 +75,12 @@ public class FilmController {
 
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
-            @RequestParam(required = false) Integer count,
-            @RequestParam(required = false) Integer genreId,
-            @RequestParam(required = false) Integer year
+            @RequestParam(defaultValue = "10") @Positive Integer count,
+            @RequestParam(defaultValue = "0") Integer genreId,
+            @RequestParam(defaultValue = "0") Integer year
     ) {
-        int genreIdByRequest = 0;
-        if (genreId != null) {
-            genreIdByRequest = genreId;
-        }
-        int yearByRequest = 0;
-        if (year != null) {
-            yearByRequest = year;
-        }
-        return filmService.getSortedFilmsByGenreAndYear(getCount(count), genreIdByRequest, yearByRequest);
+        return filmService.getSortedFilmsByGenreAndYear(count, genreId, year);
+
     }
 
     @GetMapping("/films/common")
@@ -107,16 +101,6 @@ public class FilmController {
             throw new RuntimeException(message);
         }
         return filmService.searchFilms(query, by);
-    }
-
-    private Integer getCount(Integer count) {
-        int countFilmsByLikes;
-        if ((count == null) || count == 0) {
-            countFilmsByLikes = 10;
-        } else {
-        countFilmsByLikes = count;
-        }
-        return countFilmsByLikes;
     }
 
     private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {

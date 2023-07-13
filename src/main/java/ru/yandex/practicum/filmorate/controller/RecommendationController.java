@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.RecommendationService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -17,17 +17,7 @@ public class RecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping("/users/{id}/recommendations")
-    public List<Film> getFilmsRecommendationsById(@PathVariable Integer id) {
-        checkIdOrThrowIfNullOrZeroOrLess(id);
+    public List<Film> getFilmsRecommendationsById(@PathVariable @Positive Integer id) {
         return recommendationService.getRecommendations(id);
-    }
-
-    private void checkIdOrThrowIfNullOrZeroOrLess(Integer id) {
-        if (id == null) {
-            throw new IncorrectIdException("id равен null");
-        }
-        if (id < 1) {
-            throw new IncorrectIdException("id меньше 1");
-        }
     }
 }
