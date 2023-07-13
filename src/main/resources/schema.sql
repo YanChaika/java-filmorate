@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS PUBLIC.feeds (
     eventType_id INTEGER NOT NULL,
     operation_id INTEGER NOT NULL,
     entity_id INTEGER NOT NULL,
-    FOREIGN KEY (eventType_id) REFERENCES PUBLIC.eventTypes(id),
+    FOREIGN KEY (eventType_id) REFERENCES PUBLIC.event_Types(id),
     FOREIGN KEY (operation_id) REFERENCES PUBLIC.operations(id)
 );
 
