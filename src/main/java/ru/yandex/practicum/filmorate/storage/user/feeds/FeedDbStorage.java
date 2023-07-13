@@ -27,7 +27,7 @@ public class FeedDbStorage implements FeedStorage {
     private final JdbcTemplate jdbcTemplate;
     private final String sqlQueryGet = "SELECT f.event_id, f.timestamp, f.user_id, e.name AS eventType, o.name AS operation, f.entity_id " +
             "FROM PUBLIC.feeds f " +
-            "JOIN PUBLIC.event_Types e ON f.eventType_id = e.id " +
+            "JOIN PUBLIC.event_types e ON f.eventType_id = e.id " +
             "JOIN PUBLIC.operations o ON f.operation_id = o.id";
 
     @Override
