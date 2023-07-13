@@ -9,6 +9,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.EventType;
+import ru.yandex.practicum.filmorate.model.Operation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +27,7 @@ public class FeedDbStorage implements FeedStorage {
     private final JdbcTemplate jdbcTemplate;
     private final String sqlQueryGet = "SELECT f.event_id, f.timestamp, f.user_id, e.name AS eventType, o.name AS operation, f.entity_id " +
             "FROM PUBLIC.feeds f " +
-            "JOIN PUBLIC.eventTypes e ON f.eventType_id = e.id " +
+            "JOIN PUBLIC.event_Types e ON f.eventType_id = e.id " +
             "JOIN PUBLIC.operations o ON f.operation_id = o.id";
 
     @Override
@@ -88,14 +90,14 @@ public class FeedDbStorage implements FeedStorage {
 
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Event event = new Event();
-            event.setEventId(rs.getInt("event_id"));
-            event.setTimestamp(rs.getLong("timestamp"));
-            event.setUserId(rs.getInt("user_id"));
-            event.setEventType(Event.EventType.valueOf(rs.getString("eventType")));
-            event.setOperation(Event.Operation.valueOf(rs.getString("operation")));
-            event.setEntityId(rs.getInt("entity_id"));
-            return event;
+            return Event.builder()
+                    .eventId(rs.getInt("event_id"))
+                    .timestamp(rs.getLong("timestamp"))
+                    .userId(rs.getInt("user_id"))
+                    .eventType(EventType.valueOf(rs.getString("eventType")))
+                    .operation(Operation.valueOf(rs.getString("operation")))
+                    .entityId(rs.getInt("entity_id"))
+                    .build();
         }
     }
 }

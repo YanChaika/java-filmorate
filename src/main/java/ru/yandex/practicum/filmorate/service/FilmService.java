@@ -41,14 +41,14 @@ public class FilmService {
             throw new IncorrectIdException("Film для добавления лайка не найден");
         }
         likesStorage.create(id, userId);
-        feedStorage.addEvent(new Event(userId, id, Event.EventType.LIKE, Event.Operation.ADD));
+        feedStorage.addEvent(new Event(userId, id, EventType.LIKE, Operation.ADD));
     }
 
     public void removeLike(Integer id, Integer userId) {
         try {
             Film filmToUpdate = filmStorage.getFilmById(id);
             likesStorage.remove(id, userId);
-            feedStorage.addEvent((new Event(userId, id, Event.EventType.LIKE, Event.Operation.REMOVE)));
+            feedStorage.addEvent((new Event(userId, id, EventType.LIKE, Operation.REMOVE)));
         } catch (NullPointerException e) {
             throw new IncorrectIdException("Film для удаления не найден");
         }
@@ -207,13 +207,13 @@ public class FilmService {
 
     public Review addReview(Review review) {
         review = reviewsStorage.addReview(review);
-        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.ADD));
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), EventType.REVIEW, Operation.ADD));
         return review;
     }
 
     public Review updateReview(Review review) {
         review = reviewsStorage.updateReview(review);
-        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.UPDATE));
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), EventType.REVIEW, Operation.UPDATE));
         return review;
     }
 
@@ -223,7 +223,7 @@ public class FilmService {
 
     public void deleteReviewById(int id) {
         Review review = reviewsStorage.getReviewById(id);
-        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), Event.EventType.REVIEW, Event.Operation.REMOVE));
+        feedStorage.addEvent(new Event(review.getUserId(), review.getReviewId(), EventType.REVIEW, Operation.REMOVE));
         reviewsStorage.deleteReviewById(id);
     }
 
