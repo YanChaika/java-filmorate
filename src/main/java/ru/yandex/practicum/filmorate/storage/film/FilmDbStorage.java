@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,8 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-@Primary
 @Slf4j
+@AllArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final LikesDbStorage likesDbStorage;
@@ -35,23 +35,6 @@ public class FilmDbStorage implements FilmStorage {
     private final FilmsDirectorsRelationStorage filmsDirectorsRelationStorage;
     private final DirectorStorage directorStorage;
     private final JdbcTemplate jdbcTemplate;
-
-    public FilmDbStorage(
-            JdbcTemplate jdbcTemplate,
-            LikesDbStorage likesDbStorage,
-            MpaDbStorage mpaDbStorage,
-            GenresDbStorage genresDbStorage,
-            GenreDbStorage genreDbStorage,
-            FilmsDirectorsRelationStorage filmsDirectorsRelationStorage,
-            DirectorStorage directorStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.likesDbStorage = likesDbStorage;
-        this.mpaDbStorage = mpaDbStorage;
-        this.genresDbStorage = genresDbStorage;
-        this.genreDbStorage = genreDbStorage;
-        this.filmsDirectorsRelationStorage = filmsDirectorsRelationStorage;
-        this.directorStorage = directorStorage;
-    }
 
     @Override
     public Film create(Film film) {

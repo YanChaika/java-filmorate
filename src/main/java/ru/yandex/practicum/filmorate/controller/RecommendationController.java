@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.RecommendationsService;
+import ru.yandex.practicum.filmorate.service.RecommendationService;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class RecommendationsController {
+public class RecommendationController {
 
-    private final RecommendationsService recommendationsService;
+    private final RecommendationService recommendationService;
 
     @GetMapping("/users/{id}/recommendations")
     public List<Film> getFilmsRecommendationsById(@PathVariable Integer id) {
         checkIdOrThrowIfNullOrZeroOrLess(id);
-        return recommendationsService.getRecommendations(id);
+        return recommendationService.getRecommendations(id);
     }
 
     private void checkIdOrThrowIfNullOrZeroOrLess(Integer id) {
