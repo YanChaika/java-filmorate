@@ -2,7 +2,7 @@
 ---
 
 # Схема базы данных
-![](https://github.com/YanChaika/java-filmorate/blob/add-search/src/main/resources/database_schema.svg)
+![](https://github.com/YanChaika/java-filmorate/blob/add-search/database_schema.svg)
 
 ---
 Filmorate является социальной сетью, которая поможет вам выбрать фильмы, основываясь на ваших просмотрах и оценках, а также на просмотрах и оценках ваших друзей.
