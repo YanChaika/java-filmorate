@@ -27,7 +27,7 @@ VALUES(4, 'R');
 INSERT INTO PUBLIC.FILM_RATING (RATING_ID, RATING_NAME)
 VALUES(5, 'NC-17');
 
-INSERT INTO PUBLIC.eventTypes (id, name)
+INSERT INTO PUBLIC.event_Types (id, name)
 VALUES (1,'LIKE'),
        (2,'REVIEW'),
        (3,'FRIEND');
