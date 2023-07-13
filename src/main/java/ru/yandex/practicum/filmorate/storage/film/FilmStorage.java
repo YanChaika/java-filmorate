@@ -12,9 +12,19 @@ public interface FilmStorage {
 
     Film update(Film film);
 
-    Film delete(Film film);
+    void delete(Integer id);
 
     Film getFilmById(Integer id);
 
     List<Film> getSortedFilms();
+
+    List<Film> getFilmsByDirectorSortedByYear(int directorId);
+
+    List<Film> getFilmsByDirectorSortLikes(int directorId);
+
+    List<Film> getTwoUsersCommonFilms(Integer userId, Integer friendId);
+
+    List<Film> filmsSearchInDirector(String searchQuery);
+
+    List<Film> filmsSearchInTitle(String query);
 }

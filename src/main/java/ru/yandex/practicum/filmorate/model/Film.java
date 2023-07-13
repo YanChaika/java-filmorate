@@ -5,6 +5,7 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -18,8 +19,11 @@ public class Film {
     private int rate;
     private List<Genre> genres;
     private final FilmMPA mpa;
+    private Set<Director> directors;
 
     public Film asCreated(int id) {
-        return new Film(id, name, description, releaseDate, duration, mpa);
+        Film film = new Film(id, name, description, releaseDate, duration, mpa);
+        film.setDirectors(directors);
+        return film;
     }
 }

@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.controller.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.feeds.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.user.friends.FriendStorage;
-
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,14 +22,17 @@ public class UserService {
     @Autowired
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
+    private final FeedStorage feedStorage;
 
     public void addFriends(Integer id, Integer friendId) {
+        feedStorage.addEvent(new Event(id, friendId, EventType.FRIEND, Operation.ADD));
         friendStorage.create(getById(id), getById(friendId));
     }
 
     public void removeFromFriends(Integer id, Integer friendId) {
         try {
-            Optional<User> userToUpdate = userStorage.getById(id);;
+            Optional<User> userToUpdate = userStorage.getById(id);
+            feedStorage.addEvent(new Event(id, friendId, EventType.FRIEND, Operation.REMOVE));
             friendStorage.remove(getById(id), getById(friendId));
         } catch (NullPointerException e) {
             throw new IncorrectIdException("Film для удаления не найден");
@@ -70,6 +73,10 @@ public class UserService {
         return userStorage.getAll();
     }
 
+    public void removeUser(Integer id) {
+        userStorage.delete(id);
+    }
+
     public User create(User user) {
         if ((user.getName() == null) || (user.getName().isBlank())) {
             user.setName(user.getLogin());
@@ -101,4 +108,11 @@ public class UserService {
     public User getById(Integer id) {
         return userStorage.getById(id).get();
     }
+
+    public List<Event> getFeedsByUserId(Integer id) {
+        userStorage.getById(id).orElseThrow(() -> new RuntimeException("Пользователь с id: " + id + " не найден)"));
+        List<Event> events = feedStorage.findEventsByUserId(id);
+        return events;
+    }
+
 }

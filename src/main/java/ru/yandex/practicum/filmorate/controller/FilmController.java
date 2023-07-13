@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -57,16 +58,49 @@ public class FilmController {
         filmService.removeLike(id, userId);
     }
 
+    @DeleteMapping("/films/{filmId}")
+    public void removeFilm(@PathVariable Integer filmId) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(filmId);
+        filmService.removeFilm(filmId);
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getByDirectorId(
+            @PathVariable Integer directorId,
+            @RequestParam(required = false) String sortBy
+    ) {
+        checkFilmIdOrThrowIfNullOrZeroOrLess(directorId);
+        return filmService.getByDirectorId(directorId, sortBy);
+    }
+
     @GetMapping("/films/popular")
     public List<Film> getCountPopularFilmByLikes(
-            @RequestParam(required = false) String count) {
-        int countFilmsByLikes;
-        if (count == null) {
-            countFilmsByLikes = 10;
-        } else {
-        countFilmsByLikes = Integer.parseInt(count);
+            @RequestParam(defaultValue = "10") @Positive Integer count,
+            @RequestParam(defaultValue = "0") Integer genreId,
+            @RequestParam(defaultValue = "0") Integer year
+    ) {
+        return filmService.getSortedFilmsByGenreAndYear(count, genreId, year);
+
+    }
+
+    @GetMapping("/films/common")
+    public List<Film> getTwoUsersCommonFilms(
+            @RequestParam Integer userId,
+            @RequestParam Integer friendId) {
+        return filmService.getTwoUsersCommonFilms(userId, friendId);
+    }
+
+    @GetMapping("/films/search")
+    public List<Film> searchFilms(
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "director,title", required = false) String by) {
+        log.info("Поиск фильма по " + by + ", запрос: " + query);
+        if (query == null) {
+            String message = "Пустой запрос поиска фильмов.";
+            log.info(message);
+            throw new RuntimeException(message);
         }
-        return filmService.getCountFilmsByLike(countFilmsByLikes);
+        return filmService.searchFilms(query, by);
     }
 
     private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {
