@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.controller.exceptions.IncorrecIdReviewException;
+import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdReviewException;
 import ru.yandex.practicum.filmorate.controller.exceptions.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Review;
 
@@ -27,7 +27,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     public Review addReview(Review review) {
         if (review.getFilmId() == 0 || review.getUserId() == 0) {
             log.error("Incorrect film id or user id");
-            throw new IncorrecIdReviewException("Incorrect film id or user id");
+            throw new IncorrectIdReviewException("Incorrect film id or user id");
         }
         if (review.getFilmId() < 0 || review.getUserId() < 0) {
             log.error("Incorrect film id or user id");
