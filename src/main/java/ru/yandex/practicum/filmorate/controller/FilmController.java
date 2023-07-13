@@ -89,30 +89,11 @@ public class FilmController {
         return filmService.getSortedFilmsByGenreAndYear(getCount(count), genreIdByRequest, yearByRequest);
     }
 
-    private Integer getCount(Integer count) {
-        int countFilmsByLikes;
-        if ((count == null) || count == 0) {
-            countFilmsByLikes = 10;
-        } else {
-        countFilmsByLikes = count;
-        }
-        return countFilmsByLikes;
-    }
-
     @GetMapping("/films/common")
     public List<Film> getTwoUsersCommonFilms(
             @RequestParam Integer userId,
             @RequestParam Integer friendId) {
         return filmService.getTwoUsersCommonFilms(userId, friendId);
-    }
-
-    private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {
-        if (id == null) {
-            throw new IncorrectIdException("id равен null");
-        }
-        if (id < 1) {
-            throw new IncorrectIdException("id меньше 1");
-        }
     }
 
     @GetMapping("/films/search")
@@ -126,5 +107,24 @@ public class FilmController {
             throw new RuntimeException(message);
         }
         return filmService.searchFilms(query, by);
+    }
+
+    private Integer getCount(Integer count) {
+        int countFilmsByLikes;
+        if ((count == null) || count == 0) {
+            countFilmsByLikes = 10;
+        } else {
+        countFilmsByLikes = count;
+        }
+        return countFilmsByLikes;
+    }
+
+    private void checkFilmIdOrThrowIfNullOrZeroOrLess(Integer id) {
+        if (id == null) {
+            throw new IncorrectIdException("id равен null");
+        }
+        if (id < 1) {
+            throw new IncorrectIdException("id меньше 1");
+        }
     }
 }
